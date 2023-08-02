@@ -1,0 +1,104 @@
+﻿@model IEnumerable<Neo.EasyAccounts.Models.Domain.Vouchers.ReceiptVoucher>
+
+@using Neo.EasyAccounts
+@{
+	ViewBag.Title = "Receipt Vouchers";
+	int indexer = 0;
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		@ViewBag.Title
+		<small>View and Search Receipt Vouchers</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li><a href="#">Vouchers</a></li>
+		<li class="active">Receipt Vouchers</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<div class="col-xs-12">
+			@Html.ShowMessages()
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">
+						<a href='@Url.Action("RegEdit")' class="btn btn-default btn-flat"> <i class="fa fa-plus"></i> Create New</a>
+					</h3>
+					<div class="box-tools">
+						<div class="input-group" style="width: 150px;">
+							<input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+							<div class="input-group-btn">
+								<button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+							</div>
+						</div>
+					</div>
+				</div><!-- /.box-header -->
+				<div class="box-body table-responsive no-padding">
+					<table id="listingTable" class="table table-hover">
+						<thead>
+							<tr>
+								<th></th>
+								<th>@Html.DisplayNameFor(model => model.Number)</th>
+								<th>@Html.DisplayNameFor(model => model.Customer)</th>
+								<th>@Html.DisplayNameFor(model => model.Date)</th>
+								<th>@Html.DisplayNameFor(model => model.Description)</th>
+								<th>@Html.DisplayNameFor(model => model.IsActive)</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							@foreach (var item in Model)
+							{
+								string metaData = string.Format("Created By {0} on {1} \n", item.CreatedBy, item.DateCreated.ToString("dd MMM yyyy hh:mm:ss"));
+								metaData += item.ModifiedBy.HasValue() ? "Modified By :" + item.ModifiedBy : "";
+								metaData += item.DateModified.HasValue ? " on :" + item.DateModified.Value.ToString("dd MMM yyyy hh:mm:ss") : "";
+								indexer++;
+								<tr title="@metaData" data-toggle="tooltip">
+									<td class="text-center">@indexer</td>
+									<td>@Html.DisplayFor(modelItem => item.Number)</td>
+									<td>@(item.Customer.Code + " - " + item.Customer.Name)</td>
+									<td>@Html.DisplayFor(modelItem => item.Date)</td>
+									<td>@Html.DisplayFor(modelItem => item.Description)</td>
+									<td>@(item.IsActive ? "Yes" : "No")</td>
+									<td class="text-center">
+										<a href='@Url.Action("RegEdit", new { id = item.ID })' title="Edit" data-toggle="tooltip"><i class="fa fa-edit"></i></a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+		</div>
+	</div>
+</section><!-- /.content -->
+@section styles {
+	@Styles.Render("~/Content/DataTables/css")
+}
+@section Scripts {
+	@Scripts.Render("~/Scripts/DataTables")
+
+	<script type="text/javascript">
+		$(function () {
+			$('#listingTable').DataTable({
+				"paging": true,
+				"lengthChange": false,
+				"searching": true,
+				"ordering": true,
+				"info": false,
+				"autoWidth": false,
+				'aoColumnDefs': [
+					{ "width": "7%", "targets": -2 },
+					{ "width": "1%", "targets": [-1, 0] },
+					{ 'bSortable': false, 'aTargets': -1, 'orderable': false /* 1st one, start by the right */ }
+				]
+			});
+		});
+	</script>
+}

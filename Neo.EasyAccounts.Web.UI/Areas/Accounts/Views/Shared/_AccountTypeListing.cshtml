@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Neo.EasyAccounts.Models.Domain.Accounts.AccountType>
+@using Neo.EasyAccounts
+@{
+	int indexer = 0;
+}
+
+<table id="listingTable" class="table table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>@Html.DisplayNameFor(model => model.Name)</th>
+			<th>@Html.DisplayNameFor(model => model.Code)</th>
+			<th>@Html.DisplayNameFor(model => model.Description)</th>
+			<th>@Html.DisplayNameFor(model => model.IsActive)</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		@foreach (var item in Model)
+		{
+			string metaData = string.Format("Created By {0} on {1} \n", item.CreatedBy, item.DateCreated.ToString("dd MMM yyyy hh:mm:ss"));
+			metaData += item.ModifiedBy.HasValue() ? "Modified By :" + item.ModifiedBy : "";
+			metaData += item.DateModified.HasValue ? " on :" + item.DateModified.Value.ToString("dd MMM yyyy hh:mm:ss") : "";
+			indexer++;
+			<tr title="@metaData" data-toggle="tooltip">
+				<td class="text-center">@indexer</td>
+				<td>@Html.DisplayFor(modelItem => item.Name)</td>
+				<td>@Html.DisplayFor(modelItem => item.Code)</td>
+				<td>@Html.DisplayFor(modelItem => item.Description)</td>
+				<td>@(item.IsActive ? "Yes" : "No")</td>
+				<td class="text-center">
+					<a href='@Url.Action("RegEdit", new { id = item.ID })' title="Edit" data-toggle="tooltip"><i class="fa fa-edit"></i></a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

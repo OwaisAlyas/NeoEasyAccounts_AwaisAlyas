@@ -1,0 +1,181 @@
+﻿@{
+	ViewBag.Title = "Index";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		<span id="dashBoardTitle"></span>
+		<small id="dashBoarddescription"></small>
+	</h1>
+</section>
+<!-- Main content -->
+<section class="content">
+
+	<div id="homeDashBoard">
+		@Html.Partial("_DashboardHome")
+	</div>
+	<div id="administrationDashBoard">
+		@Html.Partial("_DashboardAdministration")
+	</div>
+	<div id="locationsDashBoard">
+		@Html.Partial("_DashboardLocations")
+	</div>
+	<div id="mastersDashBoard">
+		@Html.Partial("_DashboardMasters")
+	</div>
+	<div id="accountsDashBoard">
+		@Html.Partial("_DashboardAccounts")
+	</div>
+	<div id="vouchersDashBoard">
+		@Html.Partial("_DashboardVouchers")
+	</div>
+	<div id="reportsDashBoard">
+		@Html.Partial("_DashboardReports")
+	</div>
+</section>
+<!-- /.content -->
+@section scripts{
+	@Scripts.Render("~/bundles/jqueryval")
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			console.log('loading default home dashboard');
+			loadDashboard('home');
+		});
+
+		$('#lnkHome').click(function () { console.log('its clicked human.'); loadDashboard("home"); });
+		$('#adminLink').click(function () { console.log('its clicked human.'); loadDashboard("admin"); });
+		$('#locationsLink').click(function () { console.log('its clicked human.'); loadDashboard("location"); });
+		$('#mastersLink').click(function () { console.log('its clicked human.'); loadDashboard("master"); });
+		$('#chartOfAccountsLink').click(function () { console.log('its clicked human.'); loadDashboard("accounts"); });
+		$('#vouchersLink').click(function () { console.log('its clicked human.'); loadDashboard("vouchers"); });
+		$('#reportsLink').click(function () { console.log('its clicked human.'); loadDashboard("reports"); });
+
+		function loadDashboard(dashboardLink) {
+			console.log(dashboardLink);
+			showHideDashboards(dashboardLink);
+			switch (dashboardLink) {
+				case 'home':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Home');
+					$('#dashBoarddescription').html('Main dashboard ');
+					break;
+				case 'admin':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Administration');
+					$('#dashBoarddescription').html('View all the Administration Related Information');
+					break;
+				case 'location':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Locations');
+					$('#dashBoarddescription').html('View all the Location Related Information');
+					break;
+				case 'master':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Masters');
+					$('#dashBoarddescription').html('View all the Masters Related Information');
+					break;
+				case 'accounts':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Chart of Accounts');
+					$('#dashBoarddescription').html('View all the Chart of Accounts Related Information');
+					break;
+				case 'vouchers':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Vouchers');
+					$('#dashBoarddescription').html('View all the Vouchers Related Information');
+					break;
+				case 'reports':
+					console.log('Loading ' + dashboardLink);
+					$('#dashBoardTitle').html('Reports');
+					$('#dashBoarddescription').html('View all the Masters Related Information');
+					break;
+				default:
+					alert('Hi human this is where is leave you');
+					$('#dashBoardTitle').html('Unknown');
+					$('#dashBoarddescription').html('link is lost');
+					showHideDashboards('');
+					break;
+			}
+		}
+
+		function showHideDashboards(dashboardName) {
+			switch (dashboardName) {
+				case 'home':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'block');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'admin':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'block');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'location':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'block');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'master':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'block');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'accounts':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'block');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'vouchers':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'block');
+					$('#reportsDashBoard').css('display', 'none');
+					break;
+				case 'reports':
+					console.log('Loading ' + dashboardName);
+					$('#homeDashBoard').css('display', 'none');
+					$('#administrationDashBoard').css('display', 'none');
+					$('#locationsDashBoard').css('display', 'none');
+					$('#mastersDashBoard').css('display', 'none');
+					$('#accountsDashBoard').css('display', 'none');
+					$('#vouchersDashBoard').css('display', 'none');
+					$('#reportsDashBoard').css('display', 'block');
+					break;
+				default:
+					alert('Hi human this is where is leave you');
+
+					break;
+			}
+		}
+	</script>
+}

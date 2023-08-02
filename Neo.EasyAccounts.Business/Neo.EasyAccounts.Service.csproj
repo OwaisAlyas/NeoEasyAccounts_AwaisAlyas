@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6CCC4470-2EAF-49AA-9EA7-8F5816975280}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Neo.EasyAccounts.Service</RootNamespace>
+    <AssemblyName>Neo.EasyAccounts.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accounts\AccountGroupService.cs" />
+    <Compile Include="Accounts\AccountSubGroupService.cs" />
+    <Compile Include="Accounts\AccountTitleService.cs" />
+    <Compile Include="Accounts\AccoutTypeService.cs" />
+    <Compile Include="AutoFacBooter.cs" />
+    <Compile Include="AutoGenNoSettingService.cs" />
+    <Compile Include="InitializerService.cs" />
+    <Compile Include="IService.cs" />
+    <Compile Include="Locations\AreaService.cs" />
+    <Compile Include="Locations\CityService.cs" />
+    <Compile Include="Locations\CountryService.cs" />
+    <Compile Include="Locations\StateService.cs" />
+    <Compile Include="Masters\AddressService.cs" />
+    <Compile Include="Masters\CompanyService.cs" />
+    <Compile Include="Masters\ContactInfoService.cs" />
+    <Compile Include="Masters\CustomerService.cs" />
+    <Compile Include="Masters\EmployeeService.cs" />
+    <Compile Include="Masters\LineOfBusinessService.cs" />
+    <Compile Include="Masters\SupplierService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceBase.cs" />
+    <Compile Include="ServiceUtility.cs" />
+    <Compile Include="Vouchers\JournalVoucherDetailService.cs" />
+    <Compile Include="Vouchers\JournalVoucherService.cs" />
+    <Compile Include="Vouchers\PaymentVoucherDetailService.cs" />
+    <Compile Include="Vouchers\PaymentVoucherService.cs" />
+    <Compile Include="Vouchers\ReceiptVoucherDetailService.cs" />
+    <Compile Include="Vouchers\ReceiptVoucherService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Neo.Common\Neo.Common.csproj">
+      <Project>{ab1e14fb-1fb1-4c02-b9bd-d3a7bbcd1550}</Project>
+      <Name>Neo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo.EasyAccounts.Data\Neo.EasyAccounts.Data.csproj">
+      <Project>{29f34f08-38e4-4b92-b4ba-521b7fb4cbe5}</Project>
+      <Name>Neo.EasyAccounts.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo.EasyAccounts.Models\Neo.EasyAccounts.Models.csproj">
+      <Project>{ec8d7986-62b0-48d9-ab8e-c78f8810f3ae}</Project>
+      <Name>Neo.EasyAccounts.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo.Logging\Neo.Logging.csproj">
+      <Project>{6696039f-81ac-41ea-b054-409b66d88045}</Project>
+      <Name>Neo.Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

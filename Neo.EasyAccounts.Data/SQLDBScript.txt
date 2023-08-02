@@ -1,0 +1,1825 @@
+﻿USE [EasyAccounting]
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_LogError]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP PROCEDURE [dbo].[ELMAH_LogError]
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_GetErrorXml]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP PROCEDURE [dbo].[ELMAH_GetErrorXml]
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_GetErrorsXml]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP PROCEDURE [dbo].[ELMAH_GetErrorsXml]
+GO
+ALTER TABLE [dbo].[UserRoles] DROP CONSTRAINT [FK_dbo.UserRoles_dbo.Users_UserId]
+GO
+ALTER TABLE [dbo].[UserRoles] DROP CONSTRAINT [FK_dbo.UserRoles_dbo.Roles_RoleId]
+GO
+ALTER TABLE [dbo].[UserLogins] DROP CONSTRAINT [FK_dbo.UserLogins_dbo.Users_UserId]
+GO
+ALTER TABLE [dbo].[UserClaims] DROP CONSTRAINT [FK_dbo.UserClaims_dbo.Users_UserId]
+GO
+ALTER TABLE [dbo].[States] DROP CONSTRAINT [FK_dbo.States_dbo.Countries_CountryID]
+GO
+ALTER TABLE [dbo].[Roles] DROP CONSTRAINT [FK_dbo.Roles_dbo.Users_User_Id]
+GO
+ALTER TABLE [dbo].[ReceiptVouchers] DROP CONSTRAINT [FK_dbo.ReceiptVouchers_dbo.Customers_CustomerID]
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails] DROP CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.ReceiptVouchers_ReceiptVoucherID]
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails] DROP CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[PaymentVouchers] DROP CONSTRAINT [FK_dbo.PaymentVouchers_dbo.Suppliers_SupplierID]
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails] DROP CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.PaymentVouchers_PaymentVoucherID]
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails] DROP CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails] DROP CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.JournalVouchers_JournalVoucherID]
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails] DROP CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[Cities] DROP CONSTRAINT [FK_dbo.Cities_dbo.States_StateID]
+GO
+ALTER TABLE [dbo].[Areas] DROP CONSTRAINT [FK_dbo.Areas_dbo.Cities_CityID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Suppliers_SupplierID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.LineOfBusinesses_LineOfBusinessID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Employees_EmployeeID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Customers_CustomerID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Countries_CountryID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Companies_CompanyID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Cities_CityID]
+GO
+ALTER TABLE [dbo].[Addresses] DROP CONSTRAINT [FK_dbo.Addresses_dbo.Areas_AreaID]
+GO
+ALTER TABLE [dbo].[AccountTitles] DROP CONSTRAINT [FK_dbo.AccountTitles_dbo.AccountSubGroups_AccountSubGroupID]
+GO
+ALTER TABLE [dbo].[AccountSubGroups] DROP CONSTRAINT [FK_dbo.AccountSubGroups_dbo.AccountGroups_AccountGroupID]
+GO
+ALTER TABLE [dbo].[AccountGroups] DROP CONSTRAINT [FK_dbo.AccountGroups_dbo.AccountTypes_AccountTypeID]
+GO
+/****** Object:  Index [UserNameIndex]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [UserNameIndex] ON [dbo].[Users]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_UserId] ON [dbo].[UserRoles]
+GO
+/****** Object:  Index [IX_RoleId]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_RoleId] ON [dbo].[UserRoles]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_UserId] ON [dbo].[UserLogins]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_UserId] ON [dbo].[UserClaims]
+GO
+/****** Object:  Index [IX_CountryID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CountryID] ON [dbo].[States]
+GO
+/****** Object:  Index [RoleNameIndex]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [RoleNameIndex] ON [dbo].[Roles]
+GO
+/****** Object:  Index [IX_User_Id]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_User_Id] ON [dbo].[Roles]
+GO
+/****** Object:  Index [IX_CustomerID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CustomerID] ON [dbo].[ReceiptVouchers]
+GO
+/****** Object:  Index [IX_ReceiptVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_ReceiptVoucherID] ON [dbo].[ReceiptVoucherDetails]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountID] ON [dbo].[ReceiptVoucherDetails]
+GO
+/****** Object:  Index [IX_SupplierID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_SupplierID] ON [dbo].[PaymentVouchers]
+GO
+/****** Object:  Index [IX_PaymentVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_PaymentVoucherID] ON [dbo].[PaymentVoucherDetails]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountID] ON [dbo].[PaymentVoucherDetails]
+GO
+/****** Object:  Index [IX_JournalVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_JournalVoucherID] ON [dbo].[JournalVoucherDetails]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountID] ON [dbo].[JournalVoucherDetails]
+GO
+/****** Object:  Index [IX_StateID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_StateID] ON [dbo].[Cities]
+GO
+/****** Object:  Index [IX_CityID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CityID] ON [dbo].[Areas]
+GO
+/****** Object:  Index [IX_SupplierID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_SupplierID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_LineOfBusinessID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_LineOfBusinessID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_EmployeeID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_EmployeeID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_CustomerID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CustomerID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_CountryID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CountryID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_CompanyID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CompanyID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_CityID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_CityID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_AreaID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AreaID] ON [dbo].[Addresses]
+GO
+/****** Object:  Index [IX_AccountSubGroupID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountSubGroupID] ON [dbo].[AccountTitles]
+GO
+/****** Object:  Index [IX_AccountGroupID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountGroupID] ON [dbo].[AccountSubGroups]
+GO
+/****** Object:  Index [IX_AccountTypeID]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP INDEX [IX_AccountTypeID] ON [dbo].[AccountGroups]
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Users]
+GO
+/****** Object:  Table [dbo].[UserRoles]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[UserRoles]
+GO
+/****** Object:  Table [dbo].[UserLogins]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[UserLogins]
+GO
+/****** Object:  Table [dbo].[UserClaims]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[UserClaims]
+GO
+/****** Object:  Table [dbo].[Suppliers]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Suppliers]
+GO
+/****** Object:  Table [dbo].[States]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[States]
+GO
+/****** Object:  Table [dbo].[Roles]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Roles]
+GO
+/****** Object:  Table [dbo].[ReceiptVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[ReceiptVouchers]
+GO
+/****** Object:  Table [dbo].[ReceiptVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[ReceiptVoucherDetails]
+GO
+/****** Object:  Table [dbo].[PaymentVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[PaymentVouchers]
+GO
+/****** Object:  Table [dbo].[PaymentVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[PaymentVoucherDetails]
+GO
+/****** Object:  Table [dbo].[LineOfBusinesses]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[LineOfBusinesses]
+GO
+/****** Object:  Table [dbo].[JournalVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[JournalVouchers]
+GO
+/****** Object:  Table [dbo].[JournalVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[JournalVoucherDetails]
+GO
+/****** Object:  Table [dbo].[Employees]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Employees]
+GO
+/****** Object:  Table [dbo].[ELMAH_Error]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[ELMAH_Error]
+GO
+/****** Object:  Table [dbo].[Customers]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Customers]
+GO
+/****** Object:  Table [dbo].[Countries]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Countries]
+GO
+/****** Object:  Table [dbo].[Companies]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Companies]
+GO
+/****** Object:  Table [dbo].[ClaimViewModels]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[ClaimViewModels]
+GO
+/****** Object:  Table [dbo].[Claims]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Claims]
+GO
+/****** Object:  Table [dbo].[Cities]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Cities]
+GO
+/****** Object:  Table [dbo].[Areas]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Areas]
+GO
+/****** Object:  Table [dbo].[Addresses]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[Addresses]
+GO
+/****** Object:  Table [dbo].[AccountTypes]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[AccountTypes]
+GO
+/****** Object:  Table [dbo].[AccountTitles]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[AccountTitles]
+GO
+/****** Object:  Table [dbo].[AccountSubGroups]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[AccountSubGroups]
+GO
+/****** Object:  Table [dbo].[AccountGroups]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[AccountGroups]
+GO
+/****** Object:  Table [dbo].[__MigrationHistory]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP TABLE [dbo].[__MigrationHistory]
+GO
+USE [master]
+GO
+/****** Object:  Database [EasyAccounting]    Script Date: 8/2/2023 8:32:02 PM ******/
+DROP DATABASE [EasyAccounting]
+GO
+/****** Object:  Database [EasyAccounting]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE DATABASE [EasyAccounting]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'EasyAccounting', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\EasyAccounting.mdf' , SIZE = 4096KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'EasyAccounting_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\EasyAccounting_log.ldf' , SIZE = 1280KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+ALTER DATABASE [EasyAccounting] SET COMPATIBILITY_LEVEL = 120
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [EasyAccounting].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [EasyAccounting] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [EasyAccounting] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [EasyAccounting] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [EasyAccounting] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [EasyAccounting] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [EasyAccounting] SET  MULTI_USER 
+GO
+ALTER DATABASE [EasyAccounting] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [EasyAccounting] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [EasyAccounting] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [EasyAccounting] SET TARGET_RECOVERY_TIME = 0 SECONDS 
+GO
+ALTER DATABASE [EasyAccounting] SET DELAYED_DURABILITY = DISABLED 
+GO
+USE [EasyAccounting]
+GO
+/****** Object:  Table [dbo].[__MigrationHistory]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[__MigrationHistory](
+	[MigrationId] [nvarchar](150) NOT NULL,
+	[ContextKey] [nvarchar](300) NOT NULL,
+	[Model] [varbinary](max) NOT NULL,
+	[ProductVersion] [nvarchar](32) NOT NULL,
+ CONSTRAINT [PK_dbo.__MigrationHistory] PRIMARY KEY CLUSTERED 
+(
+	[MigrationId] ASC,
+	[ContextKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[AccountGroups]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AccountGroups](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[AccountTypeID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](max) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.AccountGroups] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[AccountSubGroups]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AccountSubGroups](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[AccountGroupID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.AccountSubGroups] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[AccountTitles]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AccountTitles](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[AccountSubGroupID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.AccountTitles] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[AccountTypes]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AccountTypes](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.AccountTypes] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Addresses]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Addresses](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Street] [nvarchar](250) NULL,
+	[Building] [nvarchar](250) NULL,
+	[Floor] [nvarchar](250) NULL,
+	[OfficeNo] [nvarchar](250) NULL,
+	[HouseNo] [nvarchar](250) NULL,
+	[FlatNo] [nvarchar](250) NULL,
+	[POBoxNo] [nvarchar](250) NULL,
+	[CountryID] [bigint] NULL,
+	[CityID] [bigint] NULL,
+	[AreaID] [bigint] NULL,
+	[CompanyID] [bigint] NULL,
+	[CustomerID] [bigint] NULL,
+	[SupplierID] [bigint] NULL,
+	[EmployeeID] [bigint] NULL,
+	[LineOfBusinessID] [bigint] NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Addresses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Areas]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Areas](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[CityID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Areas] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Cities]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Cities](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[StateID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Cities] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Claims]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Claims](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+ CONSTRAINT [PK_dbo.Claims] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[ClaimViewModels]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ClaimViewModels](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](max) NOT NULL,
+	[Value] [nvarchar](max) NULL,
+	[Description] [nvarchar](max) NULL,
+ CONSTRAINT [PK_dbo.ClaimViewModels] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Companies]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Companies](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[OwnerName] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Companies] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Countries]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Countries](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Countries] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Customers]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customers](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Customers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[ELMAH_Error]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ELMAH_Error](
+	[ErrorId] [uniqueidentifier] NOT NULL,
+	[Application] [nvarchar](60) NOT NULL,
+	[Host] [nvarchar](50) NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[Source] [nvarchar](60) NOT NULL,
+	[Message] [nvarchar](500) NOT NULL,
+	[User] [nvarchar](50) NOT NULL,
+	[StatusCode] [int] NOT NULL,
+	[TimeUtc] [datetime] NOT NULL,
+	[Sequence] [int] IDENTITY(1,1) NOT NULL,
+	[AllXml] [ntext] NOT NULL,
+ CONSTRAINT [PK_dbo.ELMAH_Error] PRIMARY KEY CLUSTERED 
+(
+	[ErrorId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Employees]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Employees](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Department] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Type] [nvarchar](max) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Employees] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[JournalVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[JournalVoucherDetails](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[JournalVoucherID] [bigint] NOT NULL,
+	[AccountID] [bigint] NOT NULL,
+	[Debit] [decimal](18, 2) NULL,
+	[Credit] [decimal](18, 2) NULL,
+	[Narration] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.JournalVoucherDetails] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[JournalVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[JournalVouchers](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Number] [nvarchar](250) NOT NULL,
+	[Date] [datetime] NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](max) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.JournalVouchers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[LineOfBusinesses]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LineOfBusinesses](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[ManagerName] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.LineOfBusinesses] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[PaymentVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PaymentVoucherDetails](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[ChequeNo] [nvarchar](250) NULL,
+	[PaymentVoucherID] [bigint] NOT NULL,
+	[AccountID] [bigint] NOT NULL,
+	[Debit] [decimal](18, 2) NULL,
+	[Credit] [decimal](18, 2) NULL,
+	[Narration] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](max) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.PaymentVoucherDetails] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[PaymentVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PaymentVouchers](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[SupplierID] [bigint] NOT NULL,
+	[Number] [nvarchar](250) NOT NULL,
+	[Date] [datetime] NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.PaymentVouchers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[ReceiptVoucherDetails]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ReceiptVoucherDetails](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[ChequeNo] [nvarchar](250) NULL,
+	[ReceiptVoucherID] [bigint] NOT NULL,
+	[AccountID] [bigint] NOT NULL,
+	[Debit] [decimal](18, 2) NULL,
+	[Credit] [decimal](18, 2) NULL,
+	[Narration] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.ReceiptVoucherDetails] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[ReceiptVouchers]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ReceiptVouchers](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[CustomerID] [bigint] NOT NULL,
+	[Number] [nvarchar](250) NOT NULL,
+	[Date] [datetime] NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.ReceiptVouchers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Roles]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Roles](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[Name] [nvarchar](256) NOT NULL,
+	[User_Id] [bigint] NULL,
+ CONSTRAINT [PK_dbo.Roles] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[States]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[States](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[CountryID] [bigint] NOT NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.States] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Suppliers]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Suppliers](
+	[ID] [bigint] IDENTITY(1,1) NOT NULL,
+	[Description] [nvarchar](500) NULL,
+	[Name] [nvarchar](250) NOT NULL,
+	[Code] [nvarchar](250) NOT NULL,
+	[Type] [nvarchar](100) NOT NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[CreatedBy] [nvarchar](250) NOT NULL,
+	[DateModified] [datetime] NULL,
+	[ModifiedBy] [nvarchar](250) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[IsActive] [bit] NOT NULL,
+ CONSTRAINT [PK_dbo.Suppliers] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[UserClaims]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [bigint] NOT NULL,
+	[ClaimType] [nvarchar](150) NULL,
+	[ClaimValue] [nvarchar](500) NULL,
+ CONSTRAINT [PK_dbo.UserClaims] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[UserLogins]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserLogins](
+	[LoginProvider] [nvarchar](128) NOT NULL,
+	[ProviderKey] [nvarchar](128) NOT NULL,
+	[UserId] [bigint] NOT NULL,
+ CONSTRAINT [PK_dbo.UserLogins] PRIMARY KEY CLUSTERED 
+(
+	[LoginProvider] ASC,
+	[ProviderKey] ASC,
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[UserRoles]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserRoles](
+	[UserId] [bigint] NOT NULL,
+	[RoleId] [bigint] NOT NULL,
+ CONSTRAINT [PK_dbo.UserRoles] PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Users]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Users](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[FirstName] [nvarchar](250) NULL,
+	[LastName] [nvarchar](250) NULL,
+	[CityID] [bigint] NULL,
+	[StateID] [bigint] NULL,
+	[DateOfBirth] [datetime] NULL,
+	[Email] [nvarchar](256) NULL,
+	[EmailConfirmed] [bit] NOT NULL,
+	[PasswordHash] [nvarchar](500) NULL,
+	[SecurityStamp] [nvarchar](max) NULL,
+	[PhoneNumber] [nvarchar](50) NULL,
+	[PhoneNumberConfirmed] [bit] NOT NULL,
+	[TwoFactorEnabled] [bit] NOT NULL,
+	[LockoutEndDateUtc] [datetime] NULL,
+	[LockoutEnabled] [bit] NOT NULL,
+	[AccessFailedCount] [int] NOT NULL,
+	[UserName] [nvarchar](256) NOT NULL,
+ CONSTRAINT [PK_dbo.Users] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+INSERT [dbo].[__MigrationHistory] ([MigrationId], [ContextKey], [Model], [ProductVersion]) VALUES (N'201404262241021_InitialCreate', N'Elmah.SqlServer.EFInitializer.ElmahContext', 0x1F8B0800000000000400CD58DB6EE336107D2FD07F10F49CB572418A369077E13AC926689C04AB64D1B78296C60E518A547809EC6FDB877E527FA143DD2FB6626D9CB6F08B3C24CF5C349C33A3BFBFFDE57F5AC5CC7901A9A8E063F76874E83AC0431151BE1CBB462F3EFCEC7EFAF8E30FFE4514AF9CAFC5BE13BB0F4F7235769FB44ECE3C4F854F1013358A692885120B3D0A45EC914878C78787BF7847471E20848B588EE37F315CD318D23FF8772A7808893684CD44044CE5725C095254E796C4A01212C2D89D3C1B22A951A3A99030BA9052C82BC2238606BBCE8451822605C016AE4338179A6834F8EC5141A0A5E0CB204101610FEB0470DF823005B92367D5F65D7D3A3CB63E79D5C1022A344A8B7820E0D1491E24AF7DFCBB42ED9641C4305E60B8F5DA7A9D8672EC5EDCCC26577FA4D1739DB6BEB32993766F6FB047358803A767E3419936985DF677E04C0DD346C29883D192B003E7DECC190D7F83F583F813F8981BC6EAF6A307B8D610A0E85E8A04A45E7F8145E195D57B1DB98ED73CECB54F9767DB0733B73F1B8ACFB76805993328F3C4EBC5982409FA90BFB00C07732E4DCB1959DD005FEAA7B1FB135E9C4BBA82A810E4D88F9CE2ADC3335A1A18ACFB4A28DDA3F4F45D945A753D4A8F0EDF456B208C0CFBF4BE4F8467A01459F6E93D7D1F7FB174C97FFDD50658088C9A2240A1FA9AEB93E3E1298245FE518705C839D16045C3ED816783B4F4AA35B51A1668AC449F818344A5D13DD11A2416E2EB08D25AF8EA6D66ECF798F5041E1FDF1E79DFAB2A73B75E232D6A42D183A24AB1983C5921ACF486AA8D9992176E952B6F7A988106A03771406547469FA3C6EA269B4BEB2AB6F632BA2E68DDDBC2EBFE8C2409C6B3C6F3B9C40932929F7E0886935E9C6178A1DAC07DA5B5A526CC0FBCD0AD55548D965E52A934262B9913FBC6A651DCD9D678175BE25CA8EA86BB4D6555F48B33F639CFC4DD38B88D5905F512FD8C31EB5397A1B4AED7A2F47C101246E436AA9C0A6662DE4BBC7D380DBAAC63351676C7CB28B00E94497647C8F8AC8E9049764728B8A98E51C8764729A9A60E530A77C7C998A30E924906F853A381864F35F980F81664D00871211C605549060D9B4AE9801CCC8B7C23FD725917C5F75A17AA7D8BBDCE356EB5A1EDCAD05755DB5B4AED65756D55513FAF68AF8F509D12976D711D0CCF0B8D6C790BD64A433CB21B46C1339B328AFE561B6684D305289DB5EB2E0E2FC7ADE1EBFF3308794A456CF769E83F1C3B0CA798C334ED5016D45ED5B78F20FC85C8F089C84E8BFC86096323E6E970CCFA00B111331D21DE341FECCBFD56FBBF2502C371EBDDFDBEC2DA6DDEA9BDBB6F6BDD23ECA2F53E5AF7D496579BF3A189DFE8D6F306798F9D77B729DC5B6B9DD55E0CF05CA0FD99BDFBE8BDBB6CE07BF5CF6EFE3928BAAC20EC47380EA1AD1D1568B1E79A2F441172F4B26E51B1A5736134C19C211389B58C841A9743BC43E914F5953063BD8CE7105DF33BA313A3274A413C678DB9CCF7FAF5A70346D366FF2EB1FFD43E5C4033A94DFB3BFEABA12C2AEDBEDC904D5B206CDEE4698E56E1148970CB7589742BF88E4079F8CE21016E2FC903C409433075C703F202DF631B969E1B5892705D90FA7690D75F4433ECFE39254B4962956354E7EDA764CF7E4BFEF80FCB9F42617D160000, N'6.1.1-30610')
+GO
+INSERT [dbo].[__MigrationHistory] ([MigrationId], [ContextKey], [Model], [ProductVersion]) VALUES (N'201912271641333_InitialCreate', N'ClassifiedAds.Auth.IdentityContext', 0x1F8B0800000000000400ED5D6D6FDCB811FE5EA0FF41D0A7B6F0EDDA4E135C8DF51D9C757C359AD841D609FACDA025EE9A3889DA9328C746D15FD60FFD49FD0B25F5B67C9548AD566B1B8703029B2F33C399879C2135E3FBDF7FFE3BFBF9318EBC07986628C1A7FED1E4D0F7200E9210E1D5A99F93E50F3FFA3FFFF4C73FCC3E84F1A3F7AD1EF7868DA3337176EADF13B23E994EB3E01EC6209BC42848932C59924990C4531026D3E3C3C3BF4D8F8EA69092F0292DCF9B7DC93141312C7EA1BFCE131CC035C941F42909619455EDB4675150F5AE400CB33508E0A93F8F4096A12582E159984DCE7272EF7B6711025492058C96BE07304E082054CE93AF195C9034C1ABC59A3680E8E6690DE9B825883258C97FB2196EBB94C363B694E966624D2AC83392C48E048FDE54BA99CAD37B69D86F7447B5F7816A993CB155171A3CF5CFD6EB08050575AA4714FB9ECCF4641EA56C82ACE8C23093B3304678225339F0AE605298E2A081084512FBEFC09BE711C953788A614E52101D789FF33B3AFB1FF0E926F915E2539C47112F34159BF6090DB4E9739AAC614A9EBEC065B594CBD0F7A6E2BCA93CB199C6CD29177789C9BBBFFADE15650EEE22D8608253C4822429FC0562980202C3CF801098624603165A55B84BBCD8BF35370A42BA9F7CEF1378FC08F18ADC9FFAC76FE90EBA408F30AC5B2A09BE6244B71F9D44D21C6A246CE77A0EB32045EB123E46E66F0FED98F3BC66D30D9A5A315640E21B82DF0BC8B421AC46CDA4199D4DC4D9BF23CB1D59F4C75D20EB1B88F221D80E81DF3EBCACF1FB258960BF7391CDFC1DB1A35AB5C7B9FB6E90DD71051ED0AA508EC49FC61C69E67B5F6054F466F7685D4626053C6EABEE8B3489D9EF25DCCAD6DB4592A701133E51BA6E40BA82A427A21989FEA8AE67EF05D98CB98A6EED5026639F8D50B368DF0CEDA0AB79DBD37032DE16B15A33FD651E4C6F8E777A300D61FB42BB8C40CBA9736419ED5970EAF2C33B8DED98BE3E262B84FB83B198BE1730169C69F3030A616A75A4D4832979ABF1FAD3AA1BF2926466181DFFB88BD04E58E6D8CCDDB7A0135AFB03F5651E983B8EE42E509A9181AEB6ED9C3E829118CDE9B22FCF2515B64F59506542C739E774CAF5F23D4AD98355398F35DDA0B853C20F3140D10031AD0597798297288D6103A9F7090D6D00763F53E8D6FA9EA4E1DF41763FB0B7D2D80306794ACD48ED12AF777EC3F87C9F607895C777AD67F520D8E4580D66999BEFC90508E831F001B3595BD3FB9804BF2639F9804386E7AF2470857743601071CE820066D905C5320CE7498E495734D9ED9EF67DA52CE23EFD9D9289775BF76F2E955CB372ABE4FB74D7CA36498A40A54592BA5F92A46CD64B52F5B94AC228B40852754B7214AD7A31CA2E5729EABB718B24DC10499AA6472FD1A6DBE5F27F966549800A49384D55CF0EE2AAE88EF5CC6F1025DAEB770B0A781AF120F6EE4F99D260D09763996B7C0E2348A0771694DF3EE6200B40A8C29C0A1E5A08522F9A1364F38E210AF31785070DA860CA221AC03C5A46433484891A7D211CA035888C5A906658466C6C8D0D6DB9E71CAE2166C19671C5364CF56F1D8C71435F527A974666530E39ED80E2CF1C9321B5079068C99120A53BEE2449AAE7959D804AA3881150A559B40D57E36BDB68B0AA1C48AB31656FB23F5849BE4B92A47A28D91DAC44458C052B71D12F0356A5036EB5A5E489F7072AD1E78FE7FE542D8C852861C52F03509BA8AED5969A10AF1D588793C991624E23510D482C00625C6B195152FD10AA1D983616864D3B7C249A07352A50F5A69655771D597E367F0189749FD944B095F06A7A8AA2090DA54DF68086A49C8DD041B08AD41532A55A3B2673A1BE4260B3792D881815C4452B1664EADB98964CE59D2CC8982828933958891AADBF7A7203D46FA2F25E6EBD9E3472362653CE82D65B05379FB39A7C548B0BB258AC701D57576B8C9C3B636749DEF6F5EA425E89402DE3302BAE816658B12EA8EB0CEBDC572C456312815AC661565C01C6B0608D67E80A38DC972BBA805D029A236858B0C11DDA3844F785ABFEAFEB34685978FD8ED278BDA66F362D934FAB86D9D490A53AFB04D66B84575CD66AD5E22DAA94D51F16EEB99C7149631A649A94CE46DA86134952B082522F654D252DBED99C0302EE007B759C87B1324CF6F106A7507313DCB86AADDA57D4C3D9CFCD14297957F5F96A0058D1B9A02B8C59E8587CC3E26CDE4DC26399C42002A9E6D3D93C89F2189BA359F3ECF25D989F5FB6D8531012A3784242874A6F369574A204C28A15945B8868537B8B73E1D696A697623377C3771178AE66AF7238781255D3AB858EC93B3801A608A0DD61A29FB61B70F435CBF660DB9361DB5CBF93719B1B92BB81CD534D6AAD5F1078C59A5E15CC54EA67789E8AE9697EAF061AC6556F6E9FFD4C34AA731EC6C25C721F4F886B76A4A539FAF9F667851AE3BDCD1935E563433FD418E69AB42CE5D2F18AEE480034D31412E4788AAD0982667A6ED8DC230206317E4FBB8F755070296D3C11AED99ED626694DC01D70A75467A5090745D5664FA54954E3C9348D0E510D9FBC2644357C873DBD2AA38DA7543539D2E0B2A214625C9FC35617F2D684BD2EF438D8404C4E132C21763948C9A7A00942F21DBDE81934AA1F61CF41CD3AE3A9ABBD0E7B4ECD3F130F7DA5BB076D8DCC729F3D554D8A1A4F58D3EDE65AD41368D33ABE7B119FDE541FC33F2F76FA127EB0CD358FBD1D6A34A4BE43AA6AB172350531FDA7488EB3B350C66FA1BDFD5FAB3C744787A8F8C47999B12CC52643D162A9F2DBAA8A01E589551ED220B0796A959E5467D5F3A6C55F0790DF3BCB21BE57476AF4D07DCA088C276CC064F15B348F10645BAC1EF00960B4841929F3F8FDE3C3A363E90F0C3C9F62FF69968591E679B8ADE25F34DE084509778846DDA4DAAE6D95078E99B9E57956F2C00F200DEE41AA96076C5F3FAFA55DE4AD6F680F572EFFAACDF3A7183CFE79BBCA7323A99ED5E50EF4DC2AC85F8D21B7539AEDBE55924A2E71081F4FFD7F15B34E8AEF7FECA7A2F980FAA9AF18FD96D38E1BCAD2FBB79A90DF23CFFF565566975897FFBCAD661E78D729751F27DE219366101CE99F359F69E1B4A3C6CC0AEB5170EDC0BB9CE8C0BB47A1F6E85B7F27FB7E9FE6556AAAB54EF8E86D87133610D63A941DB977C30BE6ABAC58D61B89950D6F5F903C18EDF160ED56A7FC6AE205A544D82638EF53113C145DB100B8568B1B0DA922B81F114D8970489B485143E9464A28193628EA5D2FA24A1DEA1D22EE1B5C531DDCEF20D69842570CBC55C4AA29F83508BB05E541F46AAAEDED43CB58D7DB1793FA3ADF3EA2196B7CA54DD7ABC2D7FE4E52CF1CE64E327845E7BE8A3837A9EEE3D66E8E55AF62CDEB455469EEB3D6A92A6518B91C732C9C9852659E633D9345DDE53E815215AB8C5C603916504CD931CF1128DD456FFBC4C9D86E674C9458BB9DFD83C4AE3A72DB6248AB18E78519DAC9C8860FCF835B595F17AA9696C886124B09D5E24E8BFACFF2F32DBD73DC25D4D465EC6CA85D6BAF0DB5280D35F2E20B4C2DEA478DE5A33A06FA7A255365696B61A98EBCB916CC5877DA5E766A62626914CE6DB755A59AB8188AF8745C8C45AB26DA2AD95DD6B32A456B9D756FCAAC4DE3F3A95B5504EC5C9680392955FC1995A7BA2F4C80B994CDFC6CAA50DD97B573180E576DEAB638AB5D394C25A99ACE44BD33F7BF44A1614186561B122C410BC340F0CBCD984BBC4CEAF84092A81E22BD787D820484D4699FA5042D414068377B4F2BFEAE5DF16D8C3DF5DEC1F0125FE7649D13BA6418DF45C217251666B4F12FCA65459967D745124136C412A89888BD435EE3F7398AC246EE0BCDBB9A81048B5FAACF1ECC96847DFE583D3594AE126C49A8525F1376DDC0781D5162D9355E8007D847360AD68F700582A7CD273613916E43886A9F9D23B04A419C553436F3E9AF14C361FCF8D3FF01C688788119680000, N'6.1.1-30610')
+GO
+INSERT [dbo].[__MigrationHistory] ([MigrationId], [ContextKey], [Model], [ProductVersion]) VALUES (N'201912271643266_InitialCreate', N'Neo.EasyAccounts.Data.DbEntities', 0x1F8B0800000000000400ED5D5F6FDC38927F3FE0BE43A39FEE1659B79DB939CC06F62E123B99CDED240EE2CCE0DE0CB99B7684554B3D923A1BE3709FEC1EEE23DD57384A2225FE29FE9328A9DB2606C8B829B258552CFE8AA258C5FFFB9FFF3DFFCBF76DB2F886F222CED28BE5D9C9E97281D275B689D3878BE5BEBCFFE34FCBBFFCF99FFFE9FCED66FB7DF11BADF743550FB74C8B8BE5D7B2DCBD5AAD8AF557B48D8A936DBCCEB322BB2F4FD6D976156DB2D5CBD3D33FADCECE56089358625A8BC5F9E77D5AC65B54FFC03F2FB3748D76E53E4A3E641B9414A41C3FB9A9A92E3E465B54ECA235BA587E44D9C9DBA8787CBD5E67984A71721595D172F13A8923CCCC0D4AEE978B284DB3322A31ABAF7E2DD04D9967E9C3CD0E1744C997C71DC2F5EEA3A4404484575D755B694E5F56D2ACBA8694D47A5F94D9D691E0D90F443D2BB1792F252F5BF56105BEC58A2E1F2BA96B255E2C89DE7ECEB3FD6EB9103B7C7599E4556540CFCDD09C5CE1EA717AD216B3F45E2C14AD5EB4A6832DACFAEFC5E2729F94FB1C5DA4685FE651F262F1697F97C4EBBFA1C72FD9DF517A91EE93849504CB829F7105B8E8539EED505E3E7E46F744BEF757CBC58A6FB7121BB6CD98368DD4EFD3F2DFFF6DB9F8883B8FEE12D41A0AA3A19B32CBD1CF28457954A2CDA7A82C518EC7F9FD06D5AA967A17FA229AA9BA3377AB2755FD4B296023C75376B9F8107DFF05A50FE5D78BE5CB1FF1247D177F471B5A42A8FE9AC67886E34665BE47CEBD5EE2A6D3F77A858A751EEF9A49A1ECFCC753BBCE0D7DE181BDCC5135BCB4AFAAE84BBCEDA1AD86CE9BC71954863BC6D32FBE8F2139F46D693B2DDFF84F0FDA7E5F5CA10431BA7E9365098A526779DF17AFD765FC0D39D3F9187D8B1FEAC90DCFD59BFD5D0D6FC572F1192575C5E26BBC6BBCCD8950E99607D87779B6FD9C253231AEDEED97287F4025E63CB3A87C93EDF3B5BB189556741254CFB98E0A807DB9928A77A026C4F8F9AA7351368E8BAAC4A3EFA22483FBB2765FB5BE82FF0AFEEB98FD972DDFC7EEBF085E8EE5BB28AA5BF92EEA2C5C7D575C2648EB7FEB1AB79293901D18544FE9C3C0CA3EDC584DD9A30FABE9050766EDC0E860061F167C58F06187EFC33A441FCB0528DC98DE5F0C7201F5FB983F0F801B050760760001B1036207C49EE8AD43BF64EFB9E1A4426AF5D6543F98DE6C7254144320BAA11050D98CCA78A2A0FA056CDC69F3661F279B9AF4C81DBD4BB22C1FBD97EBFBFB788D3E66A377F4D76C5F4CD1CF3B8C151374F3E9FA4DF67D827E2EABD99E3F4A13C9D00ACF17C726AFB1C374ED25DBEEA2D499B71A0B51EED8EC66BFDB25B173B3B7DB5D923D22F94BA9BED92F718AAEEFDFEC0BFCFFA2706C1CD631611DD3CE2978F9D2B8F5DBA602B36261CAE5450AFBD07517F4B2F6A01A569A0A322B55B99295FAA1332B0D6CE8B9A17500869A476A9EC87377B66AA435B045EA406CD58F346C35CF9DD92270A9E7ABAD0430469EA939A3155C59A3D8AA65ADAB24B3469F29596B2BB8B2C6E3B79641B1AACC265F43C9AC50CD9565EAE0B4CC76956436E93325836D85612F353566F57EA3F9255B37C29D5484C28B8DF9C5065CCC858F0CCA5EC3965558EA4DBED453AEAFEA255205759C6BE94AA50FC7CCA3419F891B8E3CE0744528E0B4CD06146E16803A007500EA03066A02C57D905A5C5703206EBDD8AFB002E4A27E52BD58C788E3832D977C06F77090D7208C79701B35A5E0372CD6F78A2DDEE039D430183C47F01C332CF163C509522BD016DD0788E83E762BDBADC8AA03DE99714FE4570FFEF1B0D70FCAA08F379086567026E16C52F002C10BCCEA0528A80EC15DE9450286E59EB84BBE9CF5C65D4221A06D405BEEA4D03FB096E61138007D00FA5180DE1E55DB0FECFD61959008B81A7095EDB509E250F67A66896A3DF021C0DC338139DD7AF6335A23EC5A7FCBF6EBAF8A752D5725070F1B29AA483B0CAA7A83B61A78A203209A5028048903625B6C62AB4EF5BAEE62EFB777C8C7B1F71E403218086782F2B03A0E6E63F2CD70DDB1D4010E43DC1A3139965E6E2EBF4265142736DEAEA9792BBA1895206075831784DB78F4884D07FEFD62433778470BEFF815FDBE9F22FA891FA0A1CE980CE8503257E82E6E03F3AED03ADE46D81A3FE5F82F9234F4A7E5E2661D55045F5A788D8D3F6A1FA33C8F82E70C9E534D68A4E0667BDFD33630381D52CFE04285CAC3FCE8540ED44A2485D3EDE540BBA895DE4E939208FED1EC1FAFD02ECACB2D4A7DC46F1FF0EB53D8D7F49CFA3578D567E455ADD15B0CE9EB7F04892314903C7CB9E1665E94460FE19B7840D9E789B25D2C726F7CA52402B2DAAC91C33A357C7F0F907A8490AADB50F9143D56EFBD748B1DDC51E1EB8049201455A44F0FAA7A833E37F0447D7C68E02906F760117DACCA8F153EC0870FF030ADE0379E8CDFD07DD0866ADE8A90ADF2246075835781DBB8DE39A4CD8734C0238ADF124C9ED38347F4F7011EA21BBCE3017D80E707287C800F1FE08FCD733E973BF9EC7D25F0015E57CFE061067E80171DF7340EDF4A24C522A19703FD0FDC611A25DE1D2844373850B303E5F516FC5AF06BC7E6D79EFC1BA1CEAF41B007F9355D3DC909682BBBFA359E988510B750F7855A18B8BEF42A6BD568D06EA928A96FA716DC99C53185B0CB1976398FDFA73DF9773505C64FE51CF41ECFE0516C9CC3EBA2C8D6712D0BEFC5E10B7579ADBD4D370B97DB751B2B026EEDC53685FD40BCC3C88F79BC58FE411A20CBAE5A672A7505F673B6143DC975DA98E2A232A46ACD7D1915EB68235B0CD6E7862FC1CE07E515FA47C925B60CECCEE2B4943D559CAEE35D94384823D0B0F477158F6D6FE2932BB44369E5AA1CC6CF860DF16E7599A5B667419D26ED9DAF1853B5B260F82E4D8359192ED694CC8A5C82EC6CBE863B9CAD67CAC158B056A0E92C583B7E0E16CC5EAE3CAB113F4A170C9A2C4B6AA133DF7A2537A249D9B0E708DAF2EC1A64B74A754D68B44A9D38586C4564366B655257ABC61FCA63DD0D787359C02486085D7DC0585E7DBBCC2816276B60021393A5B5E9945EF9328B3171C96C55A30867B6EDC691E4119FC4A2E0D4E87AE3F66453901A26B02A48629B6EDB2B2AE641293E3FA6122014C9329901A5B985A7012C45D26483B1FB422D501B53201728B6157A7509EDE759BBB1B72B2AD743E0558B8C23A277373BBC5B4017341A7CDBE9C9C999A70515D0FB146B28408F56CB2672DFECAC16527B06D370F237607AB110EEDE4C83A7F26F216CEF135A08ABC7835F048917911A4754BC95D48F9D087799723E90E4791EDD5A781EA634185EA776AEA7BD927A66B3695628E601166E8DF56436FC5DB3E6A5D31866C3F130A9D9703A3D86158B2A619A6AA08DD9D3BA011713AFD85B9331A72763556D86B743DB1E35083181591AC6CACA3C99E49A07609FC2F1113BFB519D2551592A3DF2D7D75E15C7512C3F211C9AE1C2D24C6EBDF0203AEC921E96050BD8E86458AA0C5523DBB32AB3A42DE01FA861C362CD65DFF0D8DA7023E75F9C77196A5A4888157D2F447BAC1946588A4EEFF4557A3D0A6F4F996F93E099869956F46C3D2D59C07ABA047D635B8FC8C584D623EAD5A66BDA6676EB11927099069BAFEED99204E2803D8929C3C6B62A98A3096D0BD6B70D037CCBD9EC4C1BAAA53208BBB8ADCE2CE0385E7B03B40AFD3A9A77121B692630619B413C8677129B383D27C35205ED8D6CCFAAE400AA6E8FC4B061B1E6B26F786C6DB89143D20FC0DABB940D76A606E46FB0352F7B7B06D226311FF9DB1C13876DBD9210935BAC3456361CB0F98B665DB71A0D53ACE879ADDAC706FDAF4F673022955E8FC27AB40196AA21B78BB6EC861F0E8AB73731AB80CDA3598DDA483381D9DA0CE231AC46AD02A8EC2CCB144DA5B2E8890EF4B9C5050F9D7E1E6C5BAFCFC96D5CAF311B76E46C1213987C138187DB60765394D318CDBBBABC3AEB2C4762FF5A20128C5D90504AD1A62A9237A804E2AF30BD2EE60F8CAB90701A2446436134F4BAE8243B9235A06BE811C0B72456694743AB0E7131916A5C3F4C872EA54C34EAF007A07D7DEAD2D0989C76975B5F42C1E4626B72A0596E4D0E069B3AAF4F9F28FAA7E7758C34AA834F2A1AE4A8988906F9F000D268BFD61888F05FC02052E2074A27826D24AF812C45670371BA5B0E11EC3E311888F01BA2202D717BD9645064390BDA54FB0E6020226516964889EFCD4E04D523016F3219882B02B625E2B01376226E262B11645C8A12A0F950ED05D304466B4D6837FF626813DCDD4A0CF90DC9B93A8673CBC461CA9CEBC5D5ED7508070BAB7568115C0C89A90F2F96C5A48ED2AC407D40B1C3E80CD0A11CABAA51A021B01594511DDA0AA8AE591658684E1D913AA2DD311193809254F1941CFF404425C3305D516814004442B21237CC0D96940BE703645587FB71CC82017F0CBB740DA491178CD333AAACCFE0F28166D0006B42D1F8318283D158AEBBD59B6EACE12032A302FBC0011BFE042180323C0ADC8FE402A458FBECD6ECBA490EC5448D60E55C448F466839E20764978BF9E92D3417E63386A18B512A3AC1A14016986B2194A5BFF842F40A3769DAD7158F4A20AF4A3A250061190ADEF9C08C014AE063316C90A387129457AECBCAB00A36E06431851B303249AF7F1A1599020C585575AFA69E5525E64234E94BB7B5AF914EB1B9AFD45CFB0264AD3FC576BEEDA2D69722C5B77B4B7DEA8E629B85561CC6F6AF5DC5F16BFB093004DF34735A7FE0170626CD2C7684B88926AE742E55A308F8EC2AC8BE747AB5B722A403AB0C2566A7C99B22C45D25B53A748731415114C7317BAB46710293A127EFA20DD6933E9BBBAC2DFB23859C8C56870A194915FB681A2D5A1D231C11E9AD32CA5BEA5377C0CD2CB4E2889B7FED2A0EB5293BF2AF66E6561B936A1587563452CAA757EC25B3220BBDE176BBDADE2050A723FD891E10A6745A7103BCA914A1CFEC2D2BC5FEA08AFDD11140598AED7C8DE2AC0EA78C88717609644D0AB53937D1FFE48452C12EAA351C78701D448DAA69D6DBF69B7BFBEC7C7583496E235270BEC255D66857EEA3A4C9554E1F7C8876BB387D28BA96A46471B38BD6D5C6DA1F6F968BEFDB242D2E965FCB72F76AB52A6AD2C5C9365EE75991DD9727EB6CBB8A36D9EAE5E9E99F566767AB6D4363B5E646463C21D0F6546679F48084A7CD7DB5EFE2BC28AFA232BA8BAABCC6979BAD548D3961A0F84A453B820E11C8A34ABF5CD156D5DF24ABB998F7BD628C3F74209FCE2064DE61112B20AFA5458A9D77B93926505D8911E54032F7CB2CD96F53F50114756B21A7224BC8906E514DB3FA9727D594D85368EE2766293425F614B81CEA2C21EE81033D364F3A478F7DE02061972B9D13B32B76E3AD4B7E2E32D73DB1A7C8A64467E9B1E5F6D498ACE79CA176C52EB468E2739E142D95299DAF847927CEF39534D105D415D1C3055BBAAF8FDEE045F511D61E61D41446059936CF308032CA1CC46AAA01662C240C30F32C6086ACCDBD614C732EB137C0289A8F8A2E6C227300607479CED5B403C658481830E679604C7DCEC81FC454C795FB230CD87A1C8009206021610081270E02ED9EAC07042081063D66BFAAE53833FFA6CC51B553C752A065F654DEECE364535F28C6D2E94AED29BD4BB22CE7C990227B1AD7F7F7F1BABEA09D25D395DA53FA6BB62F24426DA18B54512992A165F6543E5DBFC9BE8B64DA4217AC6E3394F280AD4C5CAAA1159732A1184EB6ACA642137873AB5A45526F9D5C6DC25E5E2E651E5F0D2D267116474C93504B4D8D0D29E6669A26D4584D8D4DCBC452D3A56B52539353F0B034CD097AD49483070E1ED8CD032B4EC93B7B5FE034B28DEB059B8DE377FDE06658B75B481850E369A38632DCC41536A0F3FC16B001371B6BB94E2E5DE2D7EB8A9B98D474027058481880E36903873260CB15389AD07C77E450B41B69C5E1F1AD2FC0878584013E9E367C7421571E961E703099CDEA43D5327C2908333FCCFC91663E8D38F531F3C1585AAB99AF68F97467FEF53F5294CB8C30C50145028A1C0B8AB4E18C1E504411AB690323CAA64F17479A44722C0528B59C8E4298ED61B63BCD7631967BF89CD787B95BCC7C138191F621BC7E59FDB8DFDE21E1C0002D739B31F24C991851C27A24205443E710104A1D6D380CA74896C5A168A5223312667D45BFEFA583405DA93D25F9523F96A2F9CA3F356526E7377038DCF1E406BA8B4B1185EA2227BCD888446899CB6A31CF23191399E2808801114742C42ECFCA7014542591B1403E75D371D0EE0AEDA2BCAC581121A02B9F6F5D13DE1F03163D432C92521A0D87247D22270B60321178BA1B481FA2347A80B6A2B907E1E52FC0CB91C04B97466838AEA8722459208ABAE9584B9DB03809E811D0437CEE881E6292B7E118A2CFEC6781242602E3E089DF409FB0B91D102A20D40808E56F731BBC9F68285A1DEBE6B67C3B344BD17C77B49A72D8DC364A15103120A20B22DA2617754544F052357744B423330E22CA578AB2B4CC178EAA29071C334A15702CE0587F1CF38F6083B16BB27DF1F0B6183025608A3DA64829C5C52A6DEFA4A4FDDDA61427E9BCB93CE3B5F455D6F05AEA82A41617F37B3755960BACA26FF1A6CAED7DF35894684BB6D07F4F2E93B8FED24E2B7C88D2F81E15E597ECEF28BD58BE3C3D7BB95CBC4EE2A86892C793CCE5AFC48BC7AD52999FFD50A532479BED4A6CEE9E10BDA252141B6EB5C6A030BF1202B2F49EFF0D3D8AC34C0D49770BFDF94A6C780EE06B734FEF5DFC1057CAAD91FB6784C7BE9AB99FA2B24439D6D8FBEAAEF82AAC7FF1719F24D15D95F8FE3E4A0AC946C51E848CE27C67D295F0EFD30DFA7EB1FCAFBAF1ABC5FBFFBCE5DABF585CE778E05F2D4E17FFEDCC49F3DDA16120FD16E5EBAF11F6031FA2EFBFA0F4A1FC8A0DE8C75367A2CDA708CF443950D7D0FEF194A35DE67B336916DF1BD21BFCA38C2BDDB8CADEA1BB6F057040AF66D3466216E47936FF651B7DFF5757720CCC535B2E9DE5EB00DE96060BEB362802A7FB7E0240D226F4ED8B24844080920025FEA044C7E613421520C7F7138014364D785F54E968046009C01280C51558A4D4DEC78C2B61168759FCBC663194A2FB9867304DF8ED7718BBF4DF7EE9927CE07E8976D9C1FDD26D9385FBD641933CDC2FD53697B85FB24C8A39E70567DB56B5D0B4628024D675EFBD6E38A46B9AC5DC7DA55D371C247597F7BC87DA49DB410C3011FDEE1CB48D87B0C09EBB7466A16B3C8405362BBB330B5DE3212CC849DC9D1911490C6127AC959ED15A49CAA97ECC0BA5911C4978CD0AD011A043840E39AFFA3143479BA4DD7D19D2B40CE011C02380872D7800A9D58F193D467D850E081210242088B4FC8012AB1F338684191C66F0339BC14082F43083A798C14C46F6800D011B0E101BC0ACE7011CA60087FAF88B8EE8D969BF691126EFF398BCBAC4E5C73C8547FE606A072324627004C31F3C2FC7018EB0A00898E41B93A07C05478D4C6D3618BFA32A273C77C63D91C420F4631231B89FD8A16D0771405238906988D6F1364AAA2050FC575147739EFD8487771D55045F3A9FC821A91DC6A1CEE47B08381A70B41F8EC2C9CE8F193BD9B4E9C7B31972DCAF93BD825D03CC3C1F98D1A52E3F66B0399E69CB654A3F1E5C0C20F17C4002CE467ECCF010160C8A0543D87F0EB8608D0BBADCE2C78C0E2347CB84FD6790B3B0560998E41B93C2FEB365C4AB9493DC19F7441261FF590B2261FFF9B871F449A69133271B3F66F09413963B638B4822809C768607903B6E907BEA8B455D82F26346BAF0F218F0202C7A6010785D14D93AAE5D07EF876932C75B4D4AEEB7E966F1394B9090B79B3055A51F3FE11F7CD82765BC4BE235E6049BB6742BC375DA2867518957F9C4CBA85847F2459795341B032F6DF65F809DEE19CFD11FA48E30B6A1BCC29D28B9CCD2A2CCA3584E37FF298FD375BC8B12481B42654BDCAC646CC98A4FAED00EA5151A2A24B6E9524C252C77DFF622A8DEA492F315635456B656A75415B3889A6CADCFF88E6B714D6658801DF2604C5B731A7B3FE60624C2D5DB1A9B63765673C303C4C19AF8A55F1E59C64B73035B974F69636E08EBD7C66A69A7B32F672CABF89BCDB6AABC24757A36B531D5A94BD8A16B0AA6319F2AE312673675C128E622A76819C94EA42C528A7E6882A6590CA3CE3951A57A8A91DA349AC414ECF89092498CC3CA303D19079082631CEBB0B6C23607CF3CB8D1241468F2F968B083E41DE04689964D62249626EA0B43A03C0BE3188ABD4532F956E659BF3429866F81F4798E487F7A7272260D144383E432E6C8D0B2719618B6583ED46740599A155DD12CADB38E3590EFCC11B80F6EAC275B1F388CF5AC4B8476ACC1D414AC13689EF34E80941DFAA043B21DC0B877E990671E7A28AF502FFF7F80433F992F771BFA79BD391FA278ABC83DC19800ADC0D9405B38C9225088B16739111F8D634AA092C6B1255D3E01954931A1FA076053CD9105BAD565DCE472DABE9CC4C0C8990BB599D10AA36E7B59EF737A3538D5E5F6EAFDAFC3B23A6D3A0E0F88F20C0CB00702CD658272C8FEBCCB29AFCEF4F0565413BA41A725D5DCFE8F8EBF225EBC1BB3B6023B685DE1818F3F2CDEFCE3CFDE6A32EBF86B0379BB9113AAB103283E3A708BD0093CBF5DC857CDCC621D5034C451AD8EC1700E9627B8C293581D9B435914FDCEBD3A06AD4E1B2CA81A70CD503F4303D4A9F0C04C500E283A004BBC5504B2339FFC6805EEAB5F5B3883C539CC005FDFAB41254D615F761FAF99E0DC59575C7E8DE9E0D657539A81CBCA6AF6F18782A48E6A4D054679B13CC1159EC49ACA1CE1A6E877EE3515CFF82D2487FAAD4F8873518FF533B4405D0CD081D9A01CC0388129365114B80D66334579FB297183DEC579515E4565741715F2BE53D5EA0695C0E1FBE5A28BCC008FF4DE60F1B6D1C572735705BA37111EFCE965D95182DD75A7E2553D7635349DD24AD6FD123457754A1E6B7AAC6BD877571FCA56F6563FD575862B58F445571B723FF409D847F3D0A683FAD4964CBD2E0649D7678F4D649B034212D9A618224B0EAE9AE892B3801261520E5126271E8D1CD3530E32D3F409C877FDD086F5F6040DD001790277503DB4EAA0FDAC20F7D03E02BB204FCD5D889FCAA48EC40A50777C1DD74EA95B32744DAB9919A06EDCC446B76B2F75DD3D82BAA34FCD5D889BC152476205A83BBE8ECD9C6A5F8EE469D53E026716796AEE427C85963A122B40DDF1755C3B55DA0D5CCDCC80ADDDC0AB2A890DB81AC406BC0A7563C3C8804DD772A7CC6A46B92CE0233D174C137891A0890C855EF6B8A50766427C202DDE34117F3291EE99B8F0E645B7570B1C94A8568B4510A32FA134EFD23211F2C09B5AE4E0398D4E0C9176A020CCF28D93A32E372BC2CDCE7A288289F4022457C58171ACB2ABB09AC5A640271CB31C6C84AA0B060BC3452701E2A8A397F8CD3D76F957F3474A34225929A1CFF8F01135D01869626E7816F9B567C3252DD38866A98E3EB3900D0181269E3244C4DD9CE02D57B6112DF3265663026AB1A0D08161F36A1AB1E88B844632F87C3C74FA9F3346527600229269A113113C07EE61BE8D2BA2EAA03620AAD5996E5E64E1E5B091B92DD4080DBFF3D5EDC5479E5520ECF21BF5A0FB2A307C2DA3510ABFA80754432B8CA32071182CF5A43FF6E9C3020E4265D2594D1D748C3991A601C86E2F422DA6EA5C1F787091E1B62B9C5D4C7127442DACFEC89AE6941EC3BFF86836F1B547CB0025D81F45F30C90BACD979A125C611C0589BB4B967AD29F93D01C1E518A79042AEB4E5818D5A4388CC1BFA2089B8BCD5B4A5B68AD0E07A50E40159DECFA13289E841E173DB487280091ED0F5D78460FDD9E694D09AEE059418AEFFD4645D99C13D09E14500A3AABD2686EBFF6AB74FBEC7CD56C169302FCB3CCF2E8A1CA8D8892A22E3D5F7DC6231F6F9BAC80E757A8881F3A12E798668AD6DC57F0B6CEFBF43EA39FE5058E6815319722166D1395D1EBBC8CEFA375891FAFF10C8AD387E5E2B728D9D7EB9B3BB4799F5EEFCBDDBEC422A3ED5DC2BDFC551FF575FD9FAF249ECFAFEB5C98850F11309B71954AF23A7DB38F934DCBF73B20E7A28244755A80A437ADC6B2ACD29C3E3CB6943E66A92521A2BEF690C31784D781D596D6757A1355D921DD79FBB540BFA08768FD88CBBFC59BCAB25544CC03C1ABFDFC2A8E1EF2685B101A5D7BFC13DBF066FBFDCFFF0F3812C8EBEFE70100, N'6.1.1-30610')
+GO
+SET IDENTITY_INSERT [dbo].[AccountGroups] ON 
+
+GO
+INSERT [dbo].[AccountGroups] ([ID], [AccountTypeID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'Current Assets', N'1100', N'Some Good Description', CAST(N'2019-12-27 16:43:27.163' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountGroups] ([ID], [AccountTypeID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'Non-Current Assets', N'1200', N'Some Good Description', CAST(N'2019-12-27 16:43:27.163' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountGroups] ([ID], [AccountTypeID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 2, N'Current Liabilities', N'2100', N'Some Good Description', CAST(N'2019-12-27 16:43:27.163' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountGroups] ([ID], [AccountTypeID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 2, N'Non-Current Liabilities', N'2200', N'Some Good Description', CAST(N'2019-12-27 16:43:27.163' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[AccountGroups] OFF
+GO
+SET IDENTITY_INSERT [dbo].[AccountSubGroups] ON 
+
+GO
+INSERT [dbo].[AccountSubGroups] ([ID], [AccountGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'Staff Advances', N'101010', N'Some Good Description', CAST(N'2019-12-27 16:43:27.213' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountSubGroups] ([ID], [AccountGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'Fixed Assets', N'102020', N'Some Good Description', CAST(N'2019-12-27 16:43:27.213' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountSubGroups] ([ID], [AccountGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 3, N'Purchases', N'501010', N'Some Good Description', CAST(N'2019-12-27 16:43:27.213' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[AccountSubGroups] OFF
+GO
+SET IDENTITY_INSERT [dbo].[AccountTitles] ON 
+
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'Staff Advances Account1', N'1010101', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'Staff Advances Account2', N'1010102', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 1, N'Staff Advances Account3', N'1010103', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 2, N'Fixed Assets Account1', N'1010101', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, 2, N'Fixed Assets Account2', N'1010102', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, 2, N'Fixed Assets Account3', N'1010103', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (7, 3, N'Purchases Account1', N'1010101', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (8, 3, N'Purchases Account2', N'1010102', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTitles] ([ID], [AccountSubGroupID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (9, 3, N'Purchases Account3', N'1010103', N'Some Good Description', CAST(N'2019-12-27 16:43:27.270' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[AccountTitles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[AccountTypes] ON 
+
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Assets', N'1000', N'All type of Asset Accounts', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'Liabilities', N'2000', N'All type of Liability Accounts', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'Equity', N'3000', N'All type of Equity Accounts', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'Revenues', N'4000', N'All type of Revenue Accounts', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, N'COGS', N'5000', N'Cost of Goods Sold', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[AccountTypes] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, N'Expenses', N'6000', N'All type of Expense Accounts', CAST(N'2019-12-27 16:43:27.120' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[AccountTypes] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Areas] ON 
+
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'Area 1', N'001', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'Area 2', N'002', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 1, N'Area 3', N'003', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 2, N'Area 1', N'001', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, 2, N'Area 2', N'002', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Areas] ([ID], [CityID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, 2, N'Area 3', N'003', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.080' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Areas] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Cities] ON 
+
+GO
+INSERT [dbo].[Cities] ([ID], [StateID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'Dubai', N'001', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.027' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Cities] ([ID], [StateID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 5, N'Sharjah', N'002', N'United Arab Emirates', CAST(N'2019-12-27 16:43:27.027' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Cities] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Claims] ON 
+
+GO
+INSERT [dbo].[Claims] ([Id], [Name], [Description]) VALUES (1, N'CanApprove', N'Authorized to Approve things in the system')
+GO
+INSERT [dbo].[Claims] ([Id], [Name], [Description]) VALUES (2, N'CanReject', N'Authorized to Reject things in the system')
+GO
+INSERT [dbo].[Claims] ([Id], [Name], [Description]) VALUES (3, N'CanApproveVoucher', N'Authorized to Approve Voucher in the system')
+GO
+SET IDENTITY_INSERT [dbo].[Claims] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Companies] ON 
+
+GO
+INSERT [dbo].[Companies] ([ID], [Name], [Code], [OwnerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Jones Company', N'C001', N'Jones', NULL, CAST(N'2019-12-27 16:43:27.300' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Companies] ([ID], [Name], [Code], [OwnerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'Oliver Company', N'C001', N'Oliver Queen', NULL, CAST(N'2019-12-27 16:43:27.300' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Companies] ([ID], [Name], [Code], [OwnerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'Wayne Enterprises', N'C001', N'Bruce Wayne', NULL, CAST(N'2019-12-27 16:43:27.300' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Companies] ([ID], [Name], [Code], [OwnerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'Fish Enterprises', N'C001', N'Fish', NULL, CAST(N'2019-12-27 16:43:27.300' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Companies] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Countries] ON 
+
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Neverland', N'NL', N'Neverland (also called Never-Never-Land, Never Land and other variations) is the fictional island and dream world featured in the play Peter Pan', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'The Land of Oz', N'OZ', N'Oz is, in the first book The Wonderful Wizard of Oz', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'Middle-Earth', N'ME', N'Middle-earth refers to the fictional lands where most of the stories of author J. R. R. Tolkien take place.The main maps were those published in The Hobbit, The Lord of the Rings and The Silmarillion.', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'Narnia', N'NR', N'Narnia is a fantasy world created by C. S. Lewis as the primary location for his series of seven fantasy novels for children, The Chronicles of Narnia', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, N'UAE', N'AE', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Countries] ([ID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, N'Pakistan', N'PK', N'Islamic Republic of Pakistan', CAST(N'2019-12-27 16:43:26.920' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Countries] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Customers] ON 
+
+GO
+INSERT [dbo].[Customers] ([ID], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Thomas Merlyn', N'C001', N'Jones', CAST(N'2019-12-27 16:43:27.357' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Customers] ([ID], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'John Diggle', N'C002', N'Oliver Queen', CAST(N'2019-12-27 16:43:27.357' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Customers] ([ID], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'Felicity Megan Smoak', N'C003', N'Bruce Wayne', CAST(N'2019-12-27 16:43:27.357' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Customers] ([ID], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'Roy Harper', N'C004', N'Fish', CAST(N'2019-12-27 16:43:27.357' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Customers] ([ID], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, N'Malcolm Merlyn', N'C005', N'Fish', CAST(N'2019-12-27 16:43:27.357' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Customers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Employees] ON 
+
+GO
+INSERT [dbo].[Employees] ([ID], [Department], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Dept 1', NULL, N'Oliver Queen', N'E001', NULL, CAST(N'2019-12-27 16:43:27.323' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Employees] ([ID], [Department], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'Dept B', NULL, N'Thea Queen', N'E002', NULL, CAST(N'2019-12-27 16:43:27.323' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Employees] ([ID], [Department], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'Dept F', NULL, N'Moira Queen', N'E003', NULL, CAST(N'2019-12-27 16:43:27.323' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Employees] OFF
+GO
+SET IDENTITY_INSERT [dbo].[JournalVoucherDetails] ON 
+
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, 1, CAST(1500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, 2, CAST(0.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 2, 1, CAST(2500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 2, 2, CAST(0.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, 3, 1, CAST(3500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, 3, 2, CAST(0.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (7, 4, 1, CAST(4500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVoucherDetails] ([ID], [JournalVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (8, 4, 2, CAST(0.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.617' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[JournalVoucherDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[JournalVouchers] ON 
+
+GO
+INSERT [dbo].[JournalVouchers] ([ID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'JV-00001-16', CAST(N'2019-12-27 20:43:27.547' AS DateTime), N'JV', NULL, CAST(N'2019-12-27 16:43:27.570' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVouchers] ([ID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'JV-00002-16', CAST(N'2019-12-27 20:43:27.547' AS DateTime), N'JV', NULL, CAST(N'2019-12-27 16:43:27.570' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVouchers] ([ID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'JV-00003-16', CAST(N'2019-12-27 20:43:27.547' AS DateTime), N'JV', NULL, CAST(N'2019-12-27 16:43:27.570' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[JournalVouchers] ([ID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'JV-00004-16', CAST(N'2019-12-27 20:43:27.547' AS DateTime), N'JV', NULL, CAST(N'2019-12-27 16:43:27.570' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[JournalVouchers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[LineOfBusinesses] ON 
+
+GO
+INSERT [dbo].[LineOfBusinesses] ([ID], [Name], [Code], [ManagerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, N'Tech Mega', N'L001', N'Jones', NULL, CAST(N'2019-12-27 16:43:27.533' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[LineOfBusinesses] ([ID], [Name], [Code], [ManagerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, N'Accounting Firm', N'L002', N'Oliver Queen', NULL, CAST(N'2019-12-27 16:43:27.533' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[LineOfBusinesses] ([ID], [Name], [Code], [ManagerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, N'AI BackBone', N'L003', N'Bruce Wayne', NULL, CAST(N'2019-12-27 16:43:27.533' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[LineOfBusinesses] ([ID], [Name], [Code], [ManagerName], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, N'HR Cloud', N'L004', N'Fish', NULL, CAST(N'2019-12-27 16:43:27.533' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[LineOfBusinesses] OFF
+GO
+SET IDENTITY_INSERT [dbo].[PaymentVoucherDetails] ON 
+
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, NULL, 1, 1, CAST(1500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, NULL, 1, 2, CAST(0.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, NULL, 2, 1, CAST(2500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, NULL, 2, 2, CAST(0.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, NULL, 3, 1, CAST(3500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, NULL, 3, 2, CAST(0.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (7, NULL, 4, 1, CAST(4500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVoucherDetails] ([ID], [ChequeNo], [PaymentVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (8, NULL, 4, 2, CAST(0.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.750' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[PaymentVoucherDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[PaymentVouchers] ON 
+
+GO
+INSERT [dbo].[PaymentVouchers] ([ID], [SupplierID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'PV-00001-16', CAST(N'2019-12-27 20:43:27.657' AS DateTime), N'PV', NULL, CAST(N'2019-12-27 16:43:27.703' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVouchers] ([ID], [SupplierID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'PV-00002-16', CAST(N'2019-12-27 20:43:27.657' AS DateTime), N'PV', NULL, CAST(N'2019-12-27 16:43:27.703' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVouchers] ([ID], [SupplierID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 1, N'PV-00003-16', CAST(N'2019-12-27 20:43:27.657' AS DateTime), N'PV', NULL, CAST(N'2019-12-27 16:43:27.703' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[PaymentVouchers] ([ID], [SupplierID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 1, N'PV-00004-16', CAST(N'2019-12-27 20:43:27.657' AS DateTime), N'PV', NULL, CAST(N'2019-12-27 16:43:27.703' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[PaymentVouchers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ReceiptVoucherDetails] ON 
+
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, NULL, 1, 1, CAST(1500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, NULL, 1, 2, CAST(0.00 AS Decimal(18, 2)), CAST(1500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, NULL, 2, 1, CAST(2500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, NULL, 2, 2, CAST(0.00 AS Decimal(18, 2)), CAST(2500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, NULL, 3, 1, CAST(3500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, NULL, 3, 2, CAST(0.00 AS Decimal(18, 2)), CAST(3500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (7, NULL, 4, 1, CAST(4500.00 AS Decimal(18, 2)), CAST(0.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVoucherDetails] ([ID], [ChequeNo], [ReceiptVoucherID], [AccountID], [Debit], [Credit], [Narration], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (8, NULL, 4, 2, CAST(0.00 AS Decimal(18, 2)), CAST(4500.00 AS Decimal(18, 2)), N'Testing Initial Data', CAST(N'2019-12-27 16:43:27.837' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[ReceiptVoucherDetails] OFF
+GO
+SET IDENTITY_INSERT [dbo].[ReceiptVouchers] ON 
+
+GO
+INSERT [dbo].[ReceiptVouchers] ([ID], [CustomerID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 1, N'RV-00001-16', CAST(N'2019-12-27 20:43:27.763' AS DateTime), N'RV', NULL, CAST(N'2019-12-27 16:43:27.790' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVouchers] ([ID], [CustomerID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 1, N'RV-00002-16', CAST(N'2019-12-27 20:43:27.763' AS DateTime), N'RV', NULL, CAST(N'2019-12-27 16:43:27.790' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVouchers] ([ID], [CustomerID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 1, N'RV-00003-16', CAST(N'2019-12-27 20:43:27.763' AS DateTime), N'RV', NULL, CAST(N'2019-12-27 16:43:27.790' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[ReceiptVouchers] ([ID], [CustomerID], [Number], [Date], [Type], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 1, N'RV-00004-16', CAST(N'2019-12-27 20:43:27.763' AS DateTime), N'RV', NULL, CAST(N'2019-12-27 16:43:27.790' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[ReceiptVouchers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Roles] ON 
+
+GO
+INSERT [dbo].[Roles] ([Id], [Description], [Name], [User_Id]) VALUES (1, N'System Administrator for Global Access', N'SysAdmin', NULL)
+GO
+INSERT [dbo].[Roles] ([Id], [Description], [Name], [User_Id]) VALUES (2, N'System User for Restricted Access to Business Domain Activity', N'SysUser', NULL)
+GO
+SET IDENTITY_INSERT [dbo].[Roles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[States] ON 
+
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, 5, N'Dubai', N'DXB', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, 5, N'Abu Dhabi', N'AUH', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, 5, N'Al Ain', N'003', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, 5, N'Ras Al Khaimah', N'004', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (5, 5, N'Sharjah', N'005', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[States] ([ID], [CountryID], [Name], [Code], [Description], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (6, 5, N'Ajman', N'006', N'United Arab Emirates', CAST(N'2019-12-27 16:43:26.987' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[States] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Suppliers] ON 
+
+GO
+INSERT [dbo].[Suppliers] ([ID], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (1, NULL, N'Queen Consolidated', N'C001', N'Jones', CAST(N'2019-12-27 16:43:27.487' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Suppliers] ([ID], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (2, NULL, N'Palmer Industries', N'C001', N'Oliver Queen', CAST(N'2019-12-27 16:43:27.487' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Suppliers] ([ID], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (3, NULL, N'Wayne Enterprises', N'C001', N'Bruce Wayne', CAST(N'2019-12-27 16:43:27.487' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+INSERT [dbo].[Suppliers] ([ID], [Description], [Name], [Code], [Type], [DateCreated], [CreatedBy], [DateModified], [ModifiedBy], [IsDeleted], [IsActive]) VALUES (4, NULL, N'Fish Enterprises', N'C001', N'Fish', CAST(N'2019-12-27 16:43:27.487' AS DateTime), N'rajaawais31@gmail.com', NULL, NULL, 0, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Suppliers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[UserClaims] ON 
+
+GO
+INSERT [dbo].[UserClaims] ([Id], [UserId], [ClaimType], [ClaimValue]) VALUES (1, 1, N'CanApprove', N'true')
+GO
+INSERT [dbo].[UserClaims] ([Id], [UserId], [ClaimType], [ClaimValue]) VALUES (2, 1, N'CanReject', N'true')
+GO
+SET IDENTITY_INSERT [dbo].[UserClaims] OFF
+GO
+INSERT [dbo].[UserRoles] ([UserId], [RoleId]) VALUES (1, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Users] ON 
+
+GO
+INSERT [dbo].[Users] ([Id], [FirstName], [LastName], [CityID], [StateID], [DateOfBirth], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [UserName]) VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, 0, N'APPsrlkGBhvqomghgWNpsR2jt6m01OEoGjNp665RS479ONBRDmlK+882f5LYF06pKw==', N'697a3409-156d-482a-bd31-d7d6bded9568', NULL, 0, 0, NULL, 0, 0, N'administrator')
+GO
+INSERT [dbo].[Users] ([Id], [FirstName], [LastName], [CityID], [StateID], [DateOfBirth], [Email], [EmailConfirmed], [PasswordHash], [SecurityStamp], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [LockoutEndDateUtc], [LockoutEnabled], [AccessFailedCount], [UserName]) VALUES (2, NULL, NULL, NULL, NULL, NULL, N'rajaawais31@gmail.com', 0, N'AKwWqWIGB54peex79mjazlkBFTBdlEzO9rOJhv3O+XyhWPqBv5q+iPyNRQ+gCMv34A==', N'54b38bb2-b182-4e2f-8974-63ce22f72a56', NULL, 0, 0, NULL, 1, 0, N'rajaawais31@gmail.com')
+GO
+SET IDENTITY_INSERT [dbo].[Users] OFF
+GO
+/****** Object:  Index [IX_AccountTypeID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountTypeID] ON [dbo].[AccountGroups]
+(
+	[AccountTypeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AccountGroupID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountGroupID] ON [dbo].[AccountSubGroups]
+(
+	[AccountGroupID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AccountSubGroupID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountSubGroupID] ON [dbo].[AccountTitles]
+(
+	[AccountSubGroupID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AreaID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AreaID] ON [dbo].[Addresses]
+(
+	[AreaID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CityID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CityID] ON [dbo].[Addresses]
+(
+	[CityID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CompanyID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CompanyID] ON [dbo].[Addresses]
+(
+	[CompanyID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CountryID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CountryID] ON [dbo].[Addresses]
+(
+	[CountryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CustomerID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CustomerID] ON [dbo].[Addresses]
+(
+	[CustomerID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_EmployeeID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_EmployeeID] ON [dbo].[Addresses]
+(
+	[EmployeeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_LineOfBusinessID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_LineOfBusinessID] ON [dbo].[Addresses]
+(
+	[LineOfBusinessID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_SupplierID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_SupplierID] ON [dbo].[Addresses]
+(
+	[SupplierID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CityID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CityID] ON [dbo].[Areas]
+(
+	[CityID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_StateID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_StateID] ON [dbo].[Cities]
+(
+	[StateID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountID] ON [dbo].[JournalVoucherDetails]
+(
+	[AccountID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_JournalVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_JournalVoucherID] ON [dbo].[JournalVoucherDetails]
+(
+	[JournalVoucherID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountID] ON [dbo].[PaymentVoucherDetails]
+(
+	[AccountID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_PaymentVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_PaymentVoucherID] ON [dbo].[PaymentVoucherDetails]
+(
+	[PaymentVoucherID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_SupplierID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_SupplierID] ON [dbo].[PaymentVouchers]
+(
+	[SupplierID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_AccountID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_AccountID] ON [dbo].[ReceiptVoucherDetails]
+(
+	[AccountID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_ReceiptVoucherID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_ReceiptVoucherID] ON [dbo].[ReceiptVoucherDetails]
+(
+	[ReceiptVoucherID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CustomerID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CustomerID] ON [dbo].[ReceiptVouchers]
+(
+	[CustomerID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_User_Id]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_User_Id] ON [dbo].[Roles]
+(
+	[User_Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+
+GO
+/****** Object:  Index [RoleNameIndex]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [RoleNameIndex] ON [dbo].[Roles]
+(
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_CountryID]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_CountryID] ON [dbo].[States]
+(
+	[CountryID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_UserId] ON [dbo].[UserClaims]
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_UserId] ON [dbo].[UserLogins]
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_RoleId]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_RoleId] ON [dbo].[UserRoles]
+(
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+/****** Object:  Index [IX_UserId]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE NONCLUSTERED INDEX [IX_UserId] ON [dbo].[UserRoles]
+(
+	[UserId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+
+GO
+/****** Object:  Index [UserNameIndex]    Script Date: 8/2/2023 8:32:02 PM ******/
+CREATE UNIQUE NONCLUSTERED INDEX [UserNameIndex] ON [dbo].[Users]
+(
+	[UserName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[AccountGroups]  WITH CHECK ADD  CONSTRAINT [FK_dbo.AccountGroups_dbo.AccountTypes_AccountTypeID] FOREIGN KEY([AccountTypeID])
+REFERENCES [dbo].[AccountTypes] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AccountGroups] CHECK CONSTRAINT [FK_dbo.AccountGroups_dbo.AccountTypes_AccountTypeID]
+GO
+ALTER TABLE [dbo].[AccountSubGroups]  WITH CHECK ADD  CONSTRAINT [FK_dbo.AccountSubGroups_dbo.AccountGroups_AccountGroupID] FOREIGN KEY([AccountGroupID])
+REFERENCES [dbo].[AccountGroups] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AccountSubGroups] CHECK CONSTRAINT [FK_dbo.AccountSubGroups_dbo.AccountGroups_AccountGroupID]
+GO
+ALTER TABLE [dbo].[AccountTitles]  WITH CHECK ADD  CONSTRAINT [FK_dbo.AccountTitles_dbo.AccountSubGroups_AccountSubGroupID] FOREIGN KEY([AccountSubGroupID])
+REFERENCES [dbo].[AccountSubGroups] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[AccountTitles] CHECK CONSTRAINT [FK_dbo.AccountTitles_dbo.AccountSubGroups_AccountSubGroupID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Areas_AreaID] FOREIGN KEY([AreaID])
+REFERENCES [dbo].[Areas] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Areas_AreaID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Cities_CityID] FOREIGN KEY([CityID])
+REFERENCES [dbo].[Cities] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Cities_CityID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Companies_CompanyID] FOREIGN KEY([CompanyID])
+REFERENCES [dbo].[Companies] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Companies_CompanyID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Countries_CountryID] FOREIGN KEY([CountryID])
+REFERENCES [dbo].[Countries] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Countries_CountryID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Customers_CustomerID] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customers] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Customers_CustomerID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Employees_EmployeeID] FOREIGN KEY([EmployeeID])
+REFERENCES [dbo].[Employees] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Employees_EmployeeID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.LineOfBusinesses_LineOfBusinessID] FOREIGN KEY([LineOfBusinessID])
+REFERENCES [dbo].[LineOfBusinesses] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.LineOfBusinesses_LineOfBusinessID]
+GO
+ALTER TABLE [dbo].[Addresses]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Addresses_dbo.Suppliers_SupplierID] FOREIGN KEY([SupplierID])
+REFERENCES [dbo].[Suppliers] ([ID])
+GO
+ALTER TABLE [dbo].[Addresses] CHECK CONSTRAINT [FK_dbo.Addresses_dbo.Suppliers_SupplierID]
+GO
+ALTER TABLE [dbo].[Areas]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Areas_dbo.Cities_CityID] FOREIGN KEY([CityID])
+REFERENCES [dbo].[Cities] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Areas] CHECK CONSTRAINT [FK_dbo.Areas_dbo.Cities_CityID]
+GO
+ALTER TABLE [dbo].[Cities]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Cities_dbo.States_StateID] FOREIGN KEY([StateID])
+REFERENCES [dbo].[States] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Cities] CHECK CONSTRAINT [FK_dbo.Cities_dbo.States_StateID]
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.AccountTitles_AccountID] FOREIGN KEY([AccountID])
+REFERENCES [dbo].[AccountTitles] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails] CHECK CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.JournalVouchers_JournalVoucherID] FOREIGN KEY([JournalVoucherID])
+REFERENCES [dbo].[JournalVouchers] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[JournalVoucherDetails] CHECK CONSTRAINT [FK_dbo.JournalVoucherDetails_dbo.JournalVouchers_JournalVoucherID]
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.AccountTitles_AccountID] FOREIGN KEY([AccountID])
+REFERENCES [dbo].[AccountTitles] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails] CHECK CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.PaymentVouchers_PaymentVoucherID] FOREIGN KEY([PaymentVoucherID])
+REFERENCES [dbo].[PaymentVouchers] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[PaymentVoucherDetails] CHECK CONSTRAINT [FK_dbo.PaymentVoucherDetails_dbo.PaymentVouchers_PaymentVoucherID]
+GO
+ALTER TABLE [dbo].[PaymentVouchers]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PaymentVouchers_dbo.Suppliers_SupplierID] FOREIGN KEY([SupplierID])
+REFERENCES [dbo].[Suppliers] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[PaymentVouchers] CHECK CONSTRAINT [FK_dbo.PaymentVouchers_dbo.Suppliers_SupplierID]
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.AccountTitles_AccountID] FOREIGN KEY([AccountID])
+REFERENCES [dbo].[AccountTitles] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails] CHECK CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.AccountTitles_AccountID]
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails]  WITH CHECK ADD  CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.ReceiptVouchers_ReceiptVoucherID] FOREIGN KEY([ReceiptVoucherID])
+REFERENCES [dbo].[ReceiptVouchers] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ReceiptVoucherDetails] CHECK CONSTRAINT [FK_dbo.ReceiptVoucherDetails_dbo.ReceiptVouchers_ReceiptVoucherID]
+GO
+ALTER TABLE [dbo].[ReceiptVouchers]  WITH CHECK ADD  CONSTRAINT [FK_dbo.ReceiptVouchers_dbo.Customers_CustomerID] FOREIGN KEY([CustomerID])
+REFERENCES [dbo].[Customers] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ReceiptVouchers] CHECK CONSTRAINT [FK_dbo.ReceiptVouchers_dbo.Customers_CustomerID]
+GO
+ALTER TABLE [dbo].[Roles]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Roles_dbo.Users_User_Id] FOREIGN KEY([User_Id])
+REFERENCES [dbo].[Users] ([Id])
+GO
+ALTER TABLE [dbo].[Roles] CHECK CONSTRAINT [FK_dbo.Roles_dbo.Users_User_Id]
+GO
+ALTER TABLE [dbo].[States]  WITH CHECK ADD  CONSTRAINT [FK_dbo.States_dbo.Countries_CountryID] FOREIGN KEY([CountryID])
+REFERENCES [dbo].[Countries] ([ID])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[States] CHECK CONSTRAINT [FK_dbo.States_dbo.Countries_CountryID]
+GO
+ALTER TABLE [dbo].[UserClaims]  WITH CHECK ADD  CONSTRAINT [FK_dbo.UserClaims_dbo.Users_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[UserClaims] CHECK CONSTRAINT [FK_dbo.UserClaims_dbo.Users_UserId]
+GO
+ALTER TABLE [dbo].[UserLogins]  WITH CHECK ADD  CONSTRAINT [FK_dbo.UserLogins_dbo.Users_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[UserLogins] CHECK CONSTRAINT [FK_dbo.UserLogins_dbo.Users_UserId]
+GO
+ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD  CONSTRAINT [FK_dbo.UserRoles_dbo.Roles_RoleId] FOREIGN KEY([RoleId])
+REFERENCES [dbo].[Roles] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[UserRoles] CHECK CONSTRAINT [FK_dbo.UserRoles_dbo.Roles_RoleId]
+GO
+ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD  CONSTRAINT [FK_dbo.UserRoles_dbo.Users_UserId] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([Id])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[UserRoles] CHECK CONSTRAINT [FK_dbo.UserRoles_dbo.Users_UserId]
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_GetErrorsXml]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[ELMAH_GetErrorsXml]
+(
+    @Application NVARCHAR(60),
+    @PageIndex INT = 0,
+    @PageSize INT = 15,
+    @TotalCount INT OUTPUT
+)
+AS
+
+    SET NOCOUNT ON
+
+    DECLARE @FirstTimeUTC DATETIME
+    DECLARE @FirstSequence INT
+    DECLARE @StartRow INT
+    DECLARE @StartRowIndex INT
+
+    SELECT
+        @TotalCount = COUNT(1)
+    FROM
+        [ELMAH_Error]
+    WHERE
+        [Application] = @Application
+
+    -- Get the ID of the first error for the requested page
+
+    SET @StartRowIndex = @PageIndex * @PageSize + 1
+
+    IF @StartRowIndex <= @TotalCount
+    BEGIN
+
+        SET ROWCOUNT @StartRowIndex
+
+        SELECT
+            @FirstTimeUTC = [TimeUtc],
+            @FirstSequence = [Sequence]
+        FROM
+            [ELMAH_Error]
+        WHERE
+            [Application] = @Application
+        ORDER BY
+            [TimeUtc] DESC,
+            [Sequence] DESC
+
+    END
+    ELSE
+    BEGIN
+
+        SET @PageSize = 0
+
+    END
+
+    -- Now set the row count to the requested page size and get
+    -- all records below it for the pertaining application.
+
+    SET ROWCOUNT @PageSize
+
+    SELECT
+        errorId     = [ErrorId],
+        application = [Application],
+        host        = [Host],
+        type        = [Type],
+        source      = [Source],
+        message     = [Message],
+        [user]      = [User],
+        statusCode  = [StatusCode],
+        time        = CONVERT(VARCHAR(50), [TimeUtc], 126) + 'Z'
+    FROM
+        [ELMAH_Error] error
+    WHERE
+        [Application] = @Application
+    AND
+        [TimeUtc] <= @FirstTimeUTC
+    AND
+        [Sequence] <= @FirstSequence
+    ORDER BY
+        [TimeUtc] DESC,
+        [Sequence] DESC
+    FOR
+        XML AUTO
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_GetErrorXml]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[ELMAH_GetErrorXml]
+(
+    @Application NVARCHAR(60),
+    @ErrorId UNIQUEIDENTIFIER
+)
+AS
+
+    SET NOCOUNT ON
+
+    SELECT
+        [AllXml]
+    FROM
+        [ELMAH_Error]
+    WHERE
+        [ErrorId] = @ErrorId
+    AND
+        [Application] = @Application
+GO
+/****** Object:  StoredProcedure [dbo].[ELMAH_LogError]    Script Date: 8/2/2023 8:32:02 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[ELMAH_LogError]
+(
+    @ErrorId UNIQUEIDENTIFIER,
+    @Application NVARCHAR(60),
+    @Host NVARCHAR(30),
+    @Type NVARCHAR(100),
+    @Source NVARCHAR(60),
+    @Message NVARCHAR(500),
+    @User NVARCHAR(50),
+    @AllXml NTEXT,
+    @StatusCode INT,
+    @TimeUtc DATETIME
+)
+AS
+
+    SET NOCOUNT ON
+
+    INSERT
+    INTO
+        [ELMAH_Error]
+        (
+            [ErrorId],
+            [Application],
+            [Host],
+            [Type],
+            [Source],
+            [Message],
+            [User],
+            [AllXml],
+            [StatusCode],
+            [TimeUtc]
+        )
+    VALUES
+        (
+            @ErrorId,
+            @Application,
+            @Host,
+            @Type,
+            @Source,
+            @Message,
+            @User,
+            @AllXml,
+            @StatusCode,
+            @TimeUtc
+        )
+GO
+USE [master]
+GO
+ALTER DATABASE [EasyAccounting] SET  READ_WRITE 
+GO

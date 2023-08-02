@@ -1,0 +1,13 @@
+﻿@model Neo.EasyAccounts.IPagedList<Neo.EasyAccounts.Models.Domain.Locations.City>
+
+@{
+	ViewBag.Title = "Browse all Cities";
+}
+<h2>@ViewBag.Title</h2>
+
+<div id="gridcontainer">
+	@Html.Partial("_CitiesListing", Model)
+</div>
+@section scripts{
+	<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+}

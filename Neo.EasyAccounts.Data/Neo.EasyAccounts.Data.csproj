@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{29F34F08-38E4-4B92-B4BA-521B7FB4CBE5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Neo.EasyAccounts.Data</RootNamespace>
+    <AssemblyName>Neo.EasyAccounts.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoFacBooter.cs" />
+    <Compile Include="DataInitializerFactory.cs" />
+    <Compile Include="DbEntities.cs" />
+    <Compile Include="DbFactory.cs" />
+    <Compile Include="Disposable.cs" />
+    <Compile Include="IDbFactory.cs" />
+    <Compile Include="Initializers\AccountsInitializer.cs" />
+    <Compile Include="Initializers\DbInitializer.cs" />
+    <Compile Include="Initializers\LocationsInitializer.cs" />
+    <Compile Include="Initializers\MastersInitializer.cs" />
+    <Compile Include="Initializers\InitialDataSeeder.cs" />
+    <Compile Include="Initializers\VouchersInitializer.cs" />
+    <Compile Include="IUnitofWork.cs" />
+    <Compile Include="Mappings\Accounts\AccountGroupMapping.cs" />
+    <Compile Include="Mappings\Accounts\AccountSubGroupMapping.cs" />
+    <Compile Include="Mappings\Accounts\AccountTitleMapping.cs" />
+    <Compile Include="Mappings\Accounts\AccountTypeMapping.cs" />
+    <Compile Include="Mappings\IMapper.cs" />
+    <Compile Include="Mappings\Locations\AreaMapping.cs" />
+    <Compile Include="Mappings\Locations\CityMapping.cs" />
+    <Compile Include="Mappings\Locations\CountryMapping.cs" />
+    <Compile Include="Mappings\Locations\StateMapping.cs" />
+    <Compile Include="Mappings\Masters\AddressMapping.cs" />
+    <Compile Include="Mappings\Masters\CompanyMapping.cs" />
+    <Compile Include="Mappings\Masters\CustomerMapping.cs" />
+    <Compile Include="Mappings\Masters\EmployeeMapping.cs" />
+    <Compile Include="Mappings\Masters\LineOfBusinessMapping.cs" />
+    <Compile Include="Mappings\Masters\SupplierMapping.cs" />
+    <Compile Include="Mappings\Vouchers\JournalVoucherDetailMapping.cs" />
+    <Compile Include="Mappings\Vouchers\JournalVoucherMapping.cs" />
+    <Compile Include="Mappings\Vouchers\PaymentVoucherDetailMapping.cs" />
+    <Compile Include="Mappings\Vouchers\PaymentVoucherMapping.cs" />
+    <Compile Include="Mappings\Vouchers\ReceiptVoucherDetailMapping.cs" />
+    <Compile Include="Mappings\Vouchers\ReceiptVoucherMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Accounts\AccountGroupRepository.cs" />
+    <Compile Include="Repositories\Accounts\AccountSubGroupRepository.cs" />
+    <Compile Include="Repositories\Accounts\AccountTitleRepository.cs" />
+    <Compile Include="Repositories\Accounts\AccountTypeRepository.cs" />
+    <Compile Include="Repositories\AutoGenNoSettingRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\Locations\AreaRepository.cs" />
+    <Compile Include="Repositories\Locations\CityRepository.cs" />
+    <Compile Include="Repositories\Locations\CountryRepository.cs" />
+    <Compile Include="Repositories\Locations\StateRepository.cs" />
+    <Compile Include="Repositories\Masters\AddressRepository.cs" />
+    <Compile Include="Repositories\Masters\CompanyRepository.cs" />
+    <Compile Include="Repositories\Masters\CustomerRepository.cs" />
+    <Compile Include="Repositories\Masters\EmployeeRepository.cs" />
+    <Compile Include="Repositories\Masters\LineOfBusinessRepository.cs" />
+    <Compile Include="Repositories\Masters\SupplierRepository.cs" />
+    <Compile Include="Repositories\RepositoryBase.cs" />
+    <Compile Include="Repositories\Vouchers\JournalVoucherDetailRepository.cs" />
+    <Compile Include="Repositories\Vouchers\JournalVoucherRepository.cs" />
+    <Compile Include="Repositories\Vouchers\PaymentVoucherDetailRepository.cs" />
+    <Compile Include="Repositories\Vouchers\PaymentVoucherRepository.cs" />
+    <Compile Include="Repositories\Vouchers\ReceiptVoucherDetailRepository.cs" />
+    <Compile Include="Repositories\Vouchers\ReceiptVoucherRepository.cs" />
+    <Compile Include="UnitofWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Neo.Common\Neo.Common.csproj">
+      <Project>{ab1e14fb-1fb1-4c02-b9bd-d3a7bbcd1550}</Project>
+      <Name>Neo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo.EasyAccounts.Models\Neo.EasyAccounts.Models.csproj">
+      <Project>{ec8d7986-62b0-48d9-ab8e-c78f8810f3ae}</Project>
+      <Name>Neo.EasyAccounts.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo.Logging\Neo.Logging.csproj">
+      <Project>{6696039f-81ac-41ea-b054-409b66d88045}</Project>
+      <Name>Neo.Logging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQLDBScript.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

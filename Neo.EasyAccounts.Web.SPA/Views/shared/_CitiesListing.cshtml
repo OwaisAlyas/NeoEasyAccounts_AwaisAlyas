@@ -1,0 +1,39 @@
+﻿@model Neo.EasyAccounts.IPagedList<Neo.EasyAccounts.Models.Domain.Locations.City>
+@using Neo.EasyAccounts
+@{
+	Layout = string.Empty;
+}
+ 
+<table class="grid">
+	<thead>
+		<tr>
+			<th></th>
+			<th>Name</th>
+			<th>Code</th>
+			<th>Country</th>
+			<th>State)</th>
+			<th>Description</th>
+			<th>IsActive</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Name</td>
+				<td>@item.Code</td>
+				<td><a href='@Url.Action("RegEdit", "Countries", new { id = item.State.Country.ID })'>@item.State.Country.Name</a></td>
+				<td><a href='@Url.Action("RegEdit", "States", new { id = item.StateID })'>@item.State.Name</a></td>
+				<td>@item.Description</td>
+				<td>@(item.IsActive ? "Yes" : "No")</td>
+				<td class="text-center">
+					<a href='@Url.Action("RegEdit", new { id = item.ID })' title="Edit" data-toggle="tooltip"><i class="fa fa-edit"></i></a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+<div class="pager" id="gridPager">
+	@Html.Pager(Model.PageSize, Model.PageNumber, Model.TotalItemCount, new AjaxOptions { UpdateTargetId = "gridcontainer" }).Options(o => o.Action("AjaxPage"))
+</div>

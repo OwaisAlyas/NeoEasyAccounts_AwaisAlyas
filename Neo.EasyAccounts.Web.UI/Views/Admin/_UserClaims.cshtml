@@ -1,0 +1,39 @@
+﻿<p>You have <span data-bind="text: userClaims().length">&nbsp;</span> Claim(s)</p>
+
+<button type="button" class="btn btn-default" data-bind="click: addRow">
+	<span class="glyphicon glyphicon-plus"></span> Add New Row
+</button>
+
+@using (Html.BeginForm("UserClaimsUpdate", "Admin", FormMethod.Post, new { id = "frmClaims", name = "frmClaims" }))
+{
+	@Html.AntiForgeryToken()
+	<table class="table">
+		<thead>
+			<tr>
+				<th class="text-center">S.No</th>
+				<th>Claim Type</th>
+				<th>Claim Value</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody data-bind="template: { name: 'claimsRowTemplate', foreach: userClaims }"></tbody>
+	</table>
+	<button type="submit" class="btn btn-default" data-bind="enable: userClaims().length > 0">
+		<span class="glyphicon glyphicon-save"></span> Save
+	</button>
+}
+
+<script type="text/html" id="claimsRowTemplate">
+	<tr>
+		<td class="text-center" data-bind="text: $index() + 1"></td>
+		<td><input type="text" class="form-control required" data-bind="value: Name, title: Description, uniqueName: true" /></td>
+		<td><input type="text" class="form-control" data-bind="value: Value" /></td>
+		<td>
+			<a href="#" class="btn btn-default btn-sm" data-bind="click:  $root.removeRow ">
+				<span class="glyphicon glyphicon-trash"></span>
+			</a>
+			<input type="hidden" data-bind="value: Id" />
+		</td>
+	</tr>
+</script>
+

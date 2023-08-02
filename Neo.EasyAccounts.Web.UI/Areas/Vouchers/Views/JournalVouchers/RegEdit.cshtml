@@ -1,0 +1,562 @@
+﻿@model Neo.EasyAccounts.Web.UI.Areas.Vouchers.ViewModels.JournalVoucherViewModel
+
+@{
+	ViewBag.Title = Model.ID > 0 ? "Edit Journal Voucher " : "Create Journal Voucher" + Model.Number;
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<ol class="breadcrumb">
+		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+		<li><a href="#">Vouchers</a></li>
+		<li><a href="#">Journal Voucher</a></li>
+		<li class="active">@(Model.ID > 0 ? "Edit" : "Create") Account SubGroup</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<div class="col-xs-12">
+			@Html.ShowMessages()
+			<div id="alert_placeholder"></div>
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">@ViewBag.Title</h3>
+					<small class="pull-right">
+						@ViewBag.MetaInfo
+					</small>
+				</div>
+				@using (Html.BeginForm())
+				{
+					<div class="box-body">
+						@Html.AntiForgeryToken()
+
+						<div class="form-horizontal">
+							@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+							@Html.HiddenFor(model => model.ID)
+							@Html.HiddenFor(model => model.CreatedBy)
+							@Html.HiddenFor(model => model.DateCreated)
+						</div>
+						<div class="form-group">
+							@Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+							<div class="col-md-10">
+								@Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control" } })
+								@Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+							</div>
+						</div>
+
+						<div class="form-group">
+							@Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+							<div class="col-md-10">
+								@Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control datepicker" } })
+								@Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+							</div>
+						</div>
+
+						<div class="form-group">
+							@Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+							<div class="col-md-10">
+								@Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+								@Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+							</div>
+						</div>
+
+						<div class="form-group">
+							@Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+							<div class="col-md-10">
+								<div class="checkbox">
+									@Html.EditorFor(model => model.IsActive)
+									@Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							@Html.LabelFor(model => model.RowCount, htmlAttributes: new { @class = "control-label col-md-2" })
+							<div class="col-md-10">
+								@Html.EditorFor(model => model.RowCount, new { htmlAttributes = new { @class = "form-control col-md-2" } })
+								@Html.ValidationMessageFor(model => model.RowCount, "", new { @class = "text-danger" })
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<div class="form-group">
+							<div class="col-md-12">
+								<button type="submit" class="btn btn-flat btn-primary"><i class="fa fa-save"></i> Save</button>
+								<button type="submit" class="btn btn-flat btn-warning"><i class="fa fa-flash"></i> Reset</button>
+							</div>
+						</div>
+					</div>
+
+				}
+				@using (Html.BeginForm("delete", "JournalVouchers"))
+				{
+					<div class="col-md-4 pull-right" style="top:-45px;">
+						@Html.AntiForgeryToken()
+						@Html.HiddenFor(model => model.ID)
+						<ul class="list-inline pull-right">
+							<li>
+								<a href='@Url.Action("Index")' class="btn btn-flat btn-default pull-right"> <i class="fa fa-backward"></i> Back to Listing</a>
+							</li>
+							<li>
+								<button name="RegEdit" id="btnDelete" type="submit" class="btn btn-warning pull-right" value="Delete" onclick="return confirm('Are you sure you want to delete this?')">
+									<i class="fa fa-trash-o"></i> Delete
+								</button>
+							</li>
+						</ul>
+					</div>
+				}
+			</div>
+
+			<div class="box box-primary" id="divFormDetails">
+				<div class="box-header with-border">
+					<h3 class="box-title">Journal Voucher Details</h3>
+					<!-- tools box -->
+					<div class="pull-right box-tools">
+						<button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+					</div><!-- /. tools -->
+				</div>
+				@using (Html.BeginForm("RegEditDetail", "JournalVouchers", FormMethod.Post, new { id = "frmDetails", name = "frmDetails" }))
+				{
+					<div class="box-body">
+
+						@Html.AntiForgeryToken()
+
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="text-center">S.No</th>
+									<th>Account</th>
+									<th>Debit</th>
+									<th>Credit</th>
+									<th>Desc</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-bind="template: { name: 'detailsRowTemplate', foreach: details }"></tbody>
+						</table>
+					</div>
+					<div class="box-footer">
+						<button id="btnAddDetail" type="button" class="btn btn-default" data-bind="click: add">
+							<i class="fa fa-plus"></i> Add New Row
+						</button>
+						<button id="btnSubmitDetail" type="submit" class="btn btn-default pull-right">
+							<i class="fa fa-check"></i> Submit
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/html" id="detailsRowTemplate">
+	<tr>
+		<td class="text-center" data-bind="text: $index() + 1"></td>
+		<td>@Html.DropDownList("Accounts", Model.Accounts, "-", new { @class = "form-control col-md-2 select2 required", data_bind = "value: AccountID, uniqueName: true" })</td>
+		<td><input type="text" class="form-control required" data-bind="value: Debit , uniqueName: true" /></td>
+		<td><input type="text" class="form-control required" data-bind="value: Credit , uniqueName: true" /></td>
+		<td><input type="text" class="form-control required" data-bind="value: Narration , uniqueName: true" /></td>
+		<td>
+			<a href="#" class="btn btn-flat btn-warning" data-bind="click:  $root.remove">
+				<span class="fa fa-trash"></span>
+			</a>
+			<input type="hidden" data-bind="value: ID" />
+			<input type="hidden" data-bind="value: JournalVoucherID" />
+		</td>
+	</tr>
+</script>
+@section styles_top_before{
+
+	@Styles.Render("~/Content/Select2")
+	<link href="~/AdminLTE-2.3.0/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+}
+@section styles{
+	@Styles.Render("~/Content/iCheck-minimal-blue")
+}
+@section scripts{
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/bundles/iCheck")
+	@Scripts.Render("~/bundles/Select2")
+	<script src="~/Scripts/knockout-3.3.0.js"></script>
+	<script src="~/Scripts/jQuery.tmpl.min.js"></script>
+	<script src="~/AdminLTE-2.3.0/plugins/datepicker/bootstrap-datepicker.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('input').iCheck({
+				checkboxClass: 'icheckbox_minimal-blue',
+				radioClass: 'iradio_minimal-blue',
+				increaseArea: '20%' // optional
+			});
+
+			$(".select2").select2();
+
+			var recordID = $('#ID').val();
+			if (recordID < 1) {
+				$("#divFormDetails").css('display', 'none');
+			}
+			else {
+				$("#divFormDetails").slideDown();
+			}
+
+			$('.datepicker').datepicker({ autoclose: true, todayHighlight: true, todayBtn: true });
+
+			var voucherID = jQuery('#ID').val();
+
+			jQuery.ajax({
+				type: "POST",
+				url: '@Url.Action("GetVoucherDetails", "JournalVouchers", new { Area = "Vouchers" })',
+				data: "{voucherID: '" + voucherID + "'}",
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (data) {
+					//Service to return object set from Serialized Source
+					//Convert string to JSON and pass list to Load Function
+					if (typeof (data.d !== 'undefined')) {
+						console.log('Success in Ajax Get request. Loading the viewModel now');
+						console.log('VoucherID : ' + voucherID);
+						console.log('typeof(data) : ' + typeof (data));
+						console.log('typeof(data.d) : ' + typeof (data.d));
+						console.log(jQuery.parseJSON(data));
+						viewModel.load(jQuery.parseJSON(data), voucherID);
+					}
+				}
+			});
+		});
+	</script>
+
+	<script type="text/javascript">
+
+		function isNumber(n) {
+			if (typeof n != "undefined") {
+				return !isNaN(parseFloat(n)) && isFinite(n);
+			}
+			else {
+				return false;
+			}
+		}
+
+		this.showRow = function (element) {
+			if (element.nodeType === 1) {
+				$(element).hide().fadeIn('fast');
+			}
+		};
+
+		this.hideRow = function (element) {
+			if (element.nodeType === 1) {
+				$(element).fadeOut(function () { $(element).remove(); });
+			}
+		};
+
+		//Constructor
+		function voucherDetail(o) {
+			var self = this;
+
+			if (typeof o != "undefined") {
+
+				self.ID = ko.observable(o.ID);
+				self.JournalVoucherID = ko.observable(o.JournalVoucherID).extend({ numeric: 0 });
+				self.AccountID = ko.observable(o.AccountID).extend({ numeric: 0 });
+				self.Debit = ko.observable(o.Debit).extend({ numeric: 0 });
+				self.Credit = ko.observable(o.Credit).extend({ numeric: 0 });
+				self.Narration = ko.observable(o.Narration);
+				self.IsActive = ko.observable(o.IsActive);
+				self.remove = function (data) {
+					if (confirm('Are you sure you want to delete this record ?'))
+						detailsListModel.details.remove(this);
+
+					//var isAdmin = jQuery(".hdnIsAdmin").val();
+
+					//if (isAdmin == 0) {
+					//	alert('Insufficient Rights.Cannot delete record.');
+					//}
+					//else if (confirm('This record will be deleted from the source, Are you sure ?')) {
+					//	jQuery.ajax({
+					//		type: "POST",
+					//		url: "RegisterEdit2.aspx/RemoveServiceDetails",
+					//		data: "{ID:" + self.ID() + "}",
+					//		contentType: "application/json; charset=utf-8",
+					//		dataType: "json",
+					//		success:
+					//	function (msg) {
+					//		//msg.d contains the success status
+					//		showMessage(msg);
+					//		if (msg.d.length == 0) {
+					//			viewModel.details.remove(this);
+					//		}
+					//	}
+					//	});
+					//}
+				}
+			}
+			else {
+
+				self.ID = ko.observable('0');
+				self.JournalVoucherID = ko.observable('0').extend({ numeric: 0 });
+				self.AccountID = ko.observable('0').extend({ numeric: 0 });
+				self.Debit = ko.observable('0').extend({ numeric: 0 });
+				self.Credit = ko.observable('0').extend({ numeric: 0 });
+				self.Narration = ko.observable('');
+				self.IsActive = ko.observable(true);
+				self.remove = function (data) {
+					if (confirm('Are you sure you want to delete this record ?'))
+						detailsListModel.details.remove(this);
+				}
+			}
+		}
+
+		//Building ViewModel
+		var viewModel = {
+			voucherID: 0,
+			details: ko.observableArray([]),
+
+			add: function () {
+				this.details.push(new voucherDetail());
+			},
+			load: function (data, voucherID) {
+				this.voucherID = voucherID;
+
+				//console.log('voucherID : ' + voucherID);
+				//console.log('data : ' + data);
+
+				if (data.length == 0) {
+					var totalRows = 0;
+					totalRows = jQuery("#RowCount").val();
+
+					console.log('totalRows : ' + totalRows);
+
+					if (totalRows != 0) {
+						for (var i = 0; i < totalRows; i++) {
+							this.details.push(new voucherDetail());
+							//showProgress(i, totalRows);
+						}
+					}
+					else {
+						this.details.push(new voucherDetail());
+					}
+				}
+				else {
+					for (i = 0; i < data.length; i++) {
+						this.details.push(new voucherDetail(data[i]));
+						//showProgress(i, data.length);
+					}
+				}
+			},
+			save: function () {
+
+				console.log('Inside the Save request');
+
+				var token = $('[name=__RequestVerificationToken]').val();
+				var data = ko.utils.stringifyJson(this.details);
+
+				console.log('Anti-Forgery : ' + token);
+				console.log('self.detailsList : ' + ko.toJSON(this));
+				
+				$('#btnAddDetail').attr('disabled', 'true');
+				//$('#btnAddDetail').addClass("ButtonPleaseWait");
+				$('#btnAddDetail').val('Working...');
+
+				$('#btnSubmitDetail').attr('disabled', 'true');
+				//$('#btnSubmitDetail').addClass("ButtonPleaseWait");
+				$('#btnSubmitDetail').val('Working...');
+
+				jQuery.ajax({
+					type: 'POST',
+					url: '@Url.Action("RegEditDetail", "JournalVouchers", new { Area = "Vouchers" })',
+					cache: false,
+					headers: { "__RequestVerificationToken": token, "UserID": '@HttpContext.Current.User.Identity.Name' },
+					contentType: 'application/json; charset=utf-8',
+					data: ko.toJSON(this),
+					success: function (data) {
+						//alert(data.msg);
+						ShowAlert('alert-success', 'glyphicon glyphicon-ok-sign', '@Neo.EasyAccounts.Web.UI.Helpers.AlertMessages.SaveSuccessfullMessage', 4000);
+						setTimeout("window.location = '@Url.Action("index", "JournalVouchers", new { Area = "Vouchers" })" + "';", 6000);
+					},
+					error: function (jqXHR, exception) {
+						if (jqXHR.status === 0) {
+							alert('Not connect.\n Verify Network.' + jqXHR.responseText);
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]' + jqXHR.responseText);
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].' + jqXHR.responseText);
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.' + jqXHR.responseText);
+						} else if (exception === 'timeout') {
+							alert('Time out error.' + jqXHR.responseText);
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.' + jqXHR.responseText);
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+					},
+					complete: function () { // will fire either on success or error
+						$('#btnAddDetail').removeAttr("disabled");
+						//$('#btnAddDetail').removeClass('ButtonPleaseWait');
+						$('#btnAddDetail').addClass('default-button');
+
+						$('#btnSubmitDetail').removeAttr("disabled");
+						//$('#btnSubmitDetail').removeClass('ButtonPleaseWait');
+						$('#btnSubmitDetail').addClass('default-button');
+					}
+				});
+			}
+		}
+		viewModel.totalDebit = ko.computed(function () {
+			var result = 0;
+			ko.utils.arrayForEach(this.details(), function (item) {
+				if (isNumber(item.Debit())) {
+					result += parseFloat(item.Debit());
+				}
+			});
+			return result;
+		}, viewModel);
+		viewModel.totalCredit = ko.computed(function () {
+			var result = 0;
+			ko.utils.arrayForEach(this.details(), function (item) {
+				if (isNumber(item.Credit())) {
+					result += parseFloat(item.Credit());
+				}
+			});
+			return result;
+		}, viewModel);
+
+		ko.extenders.numeric = function (target, precision) {
+			//create a writeable computed observable to intercept writes to our observable
+			var result = ko.computed({
+				read: target,  //always return the original observables value
+				write: function (newValue) {
+					var current = target(),
+				roundingMultiplier = Math.pow(10, precision),
+				newValueAsNum = isNaN(newValue) ? 0 : parseFloat(+newValue),
+				valueToWrite = Math.round(newValueAsNum * roundingMultiplier) / roundingMultiplier;
+
+					//only write if it changed
+					if (valueToWrite !== current) {
+						target(valueToWrite);
+					} else {
+						//if the rounded value is the same, but a different value was written, force a notification for the current field
+						if (newValue !== current) {
+							target.notifySubscribers(valueToWrite);
+						}
+					}
+				}
+			});
+
+			//initialize with current value to make sure it is rounded appropriately
+			result(target());
+
+			//return the new computed observable
+			return result;
+		};
+		//Binding ViewModel
+		ko.applyBindings(viewModel);
+
+		$("#frmDetails").validate({
+			submitHandler: function () {
+				console.log('Approaching viewModel.save inside from validator');
+				viewModel.save();
+			}
+		});
+	</script>
+
+	@*<script type="text/javascript">
+			function isNumber(n) {
+				if (typeof n != "undefined") {
+					return !isNaN(parseFloat(n)) && isFinite(n);
+				}
+				else {
+					return false;
+				}
+			}
+
+			this.showRow = function (element) {
+				if (element.nodeType === 1) {
+					$(element).hide().fadeIn('fast');
+				}
+			};
+
+			this.hideRow = function (element) {
+				if (element.nodeType === 1) {
+					$(element).fadeOut(function () { $(element).remove(); });
+				}
+			};
+
+			var detailsListModel = function (detailsList) {
+				var self = this;
+				var recordID = $('#ID').val();
+				self.detailsList = ko.observableArray(detailsList);
+
+				self.addRow = function () {
+
+					this.detailsList.push(new initializeDetailObject());
+
+					//self.detailsList.push({
+					//	ID: 0,
+					//	JournalVoucherID: 0,
+					//	AccountID: "",
+					//	Debit: '', // 0 change to zero if there is problem with validations of decimal types
+					//	Credit: '', // 0
+					//	Narration: ""
+					//});
+				};
+
+				self.removeRow = function (detailsRow) {
+					self.detailsList.remove(detailsRow);
+				};
+
+				self.save = function (form) {
+					console.log('Inside the Save request');
+
+					var token = $('[name=__RequestVerificationToken]').val();
+					var data = ko.utils.stringifyJson(self.detailsList);
+
+					console.log('Anti-Forgery : ' + token);
+
+					$.ajax({
+						type: 'POST',
+						url: '@Url.Action("RegEditDetail", "JournalVouchers", new { Area = "Vouchers" })',
+						cache: false,
+						headers: { "__RequestVerificationToken": token, "UserID": '@HttpContext.Current.User.Identity.Name' },
+						contentType: 'application/json; charset=utf-8',
+						data: data,
+						success: function (data) { alert(data.msg); },
+						error: function (jqXHR, exception) {
+							var msg = '';
+							if (jqXHR.status === 0) { msg = 'Not connect.\n Verify Network.'; }
+							else if (jqXHR.status == 404) { msg = 'Requested page not found. [404]'; }
+							else if (jqXHR.status == 500) { msg = 'Internal Server Error [500].\n' + jqXHR.responseText; }
+							else if (exception === 'parsererror') { msg = 'Requested JSON parse failed.'; }
+							else if (exception === 'timeout') { msg = 'Time out error.'; }
+							else if (exception === 'abort') { msg = 'Ajax request aborted.'; }
+							else { msg = 'Uncaught Error.\n' + jqXHR.responseText; }
+
+							alert('Human you got screwed . . . \n' + msg);
+						}
+					});
+				};
+
+				if (recordID > 0 && self.detailsList().length < 1) {
+					var rowCount = parseInt(@Request.QueryString["rowCount"]);
+					if (rowCount > 0) {
+						for (var i = 0; i < rowCount; i++) {
+							this.addRow();
+						}
+					}
+					else {
+						this.addRow();
+					}
+				}
+			};
+
+			var viewModel = new detailsListModel(@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.DetailsList)));
+			ko.applyBindings(viewModel);
+
+			$("#frmDetails").validate({
+				submitHandler: function () {
+					console.log('Approaching viewModel.save inside from validator');
+					viewModel.save();
+				}
+			});
+		</script>*@
+}

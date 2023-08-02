@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Neo.EasyAccounts.Models.Domain.Accounts.AccountBase">
+    <Position X="14.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Accounts\AccountBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Accounts.AccountGroup">
+    <Position X="15.75" Y="10.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Accounts\AccountGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Accounts.AccountSubGroup">
+    <Position X="13.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAACAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Accounts\AccountSubGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Accounts.AccountTitle">
+    <Position X="11.5" Y="10.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Accounts\AccountTitle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Accounts.AccountType">
+    <Position X="17.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Accounts\AccountType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Locations.Area">
+    <Position X="42.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Locations\Area.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Locations.City">
+    <Position X="40.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAEAAAAAAAAAACAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Domain\Locations\City.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Locations.Country">
+    <Position X="36.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Domain\Locations\Country.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Locations.State">
+    <Position X="38.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAEAAAAAAAAAAIQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Locations\State.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.LocationBase">
+    <Position X="39" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Locations\LocationBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Address">
+    <Position X="47" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMABBABAAIAAIgIAAAAAAABGBIQiAAAICIABQAAAAA=</HashCode>
+      <FileName>Domain\Masters\Address.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Company">
+    <Position X="56" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAQAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\Company.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.ContactInfo">
+    <Position X="20" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAgCIAAIAAAAAAAACAEAAAAAAAACAAJAAAAAg=</HashCode>
+      <FileName>Domain\Masters\ContactInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Customer">
+    <Position X="49.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\Customer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Employee">
+    <Position X="51.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.LineOfBusiness">
+    <Position X="44.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgQAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\LineOfBusiness.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.PersonBase">
+    <Position X="51.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAQAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\PersonBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Supplier">
+    <Position X="53.5" Y="10.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Masters\Supplier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.ModelBase">
+    <Position X="33.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAgAAEEAAAAAQAAAAAAIAAAAAEAQAAAAE=</HashCode>
+      <FileName>Domain\ModelBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.JournalVoucher">
+    <Position X="22" Y="11" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\JournalVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.JournalVoucherDetail">
+    <Position X="31.25" Y="11.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\JournalVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.PaymentVoucher">
+    <Position X="24.25" Y="11" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\PaymentVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.PaymentVoucherDetail">
+    <Position X="33.5" Y="11.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAEAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\PaymentVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.ReceiptVoucher">
+    <Position X="26.5" Y="11" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEAAQAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\ReceiptVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.ReceiptVoucherDetail">
+    <Position X="29" Y="11.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAQABABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\ReceiptVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.VoucherBase">
+    <Position X="24.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAEAAAAAAAAAAAAABAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\VoucherBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.VoucherDetailBase">
+    <Position X="31.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAABAgAAAAAAEAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Domain\Vouchers\VoucherDetailBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

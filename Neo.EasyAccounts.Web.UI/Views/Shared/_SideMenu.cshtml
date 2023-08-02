@@ -1,0 +1,100 @@
+﻿
+@{
+	var Url = new UrlHelper(Html.ViewContext.RequestContext);
+}
+<aside class="main-sidebar">
+	<!-- sidebar: style can be found in sidebar.less -->
+	<section class="sidebar">
+		<!-- search form (Optional) -->
+		<form action="#" method="get" class="sidebar-form">
+			<div class="input-group">
+				<input type="text" name="q" class="form-control" placeholder="Search...">
+				<span class="input-group-btn">
+					<button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+				</span>
+			</div>
+		</form>
+		<!-- /.search form -->
+		<!-- Sidebar Menu -->
+		<ul class="sidebar-menu">
+			<li class="header">MAIN NAVIGATION</li>
+			<li>
+				<a id="lnkHome" href='@Url.Action("Index","Home")'>
+					<i class="fa fa-dashboard"></i> <span>Dashboard</span>
+				</a>
+			</li>
+			<li class="treeview">
+				<a id="adminLink" href="#">
+					<i class="fa fa-users"></i> <span>Admin</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="@Url.Action("SystemUsers","Admin")"><i class="fa fa-user"></i> Users</a></li>
+					<li><a href="@Url.Action("SystemRoles","Admin")"><i class="fa fa-key"></i> Roles</a></li>
+					<li><a href="@Url.Action("SystemClaims", "Admin")"><i class="fa fa-pencil"></i> Claims</a></li>
+				</ul>
+			</li>
+			<li class="treeview">
+				<a id="locationsLink" href="#">
+					<i class="fa fa-users"></i><span>Locations</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="@Url.Action("index", "countries", new { Area = "Locations" }, null)"><i class="fa fa-globe"></i> Countries</a></li>
+					<li><a href="@Url.Action("index", "states", new { Area = "Locations" },null)"><i class="fa fa-globe"></i> States</a></li>
+					<li><a href="@Url.Action("index", "cities", new { Area = "Locations" }, null)"><i class="fa fa-map"></i> Citites</a></li>
+					<li><a href="@Url.Action("index", "AreaSpots", new { Area = "Locations" }, null)"><i class="fa fa-map-marker"></i> Areas</a></li>
+				</ul>
+			</li>
+			<li class="treeview">
+				<a id="mastersLink" href="#">
+					<i class="fa fa-users"></i> <span>Masters</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="@Url.Action("index", "Companies", new { Area = "Masters" }, null)"><i class="fa fa-bank"></i> Companies</a></li>
+					<li><a href="@Url.Action("index", "LineOfBusinesses", new { Area = "Masters" }, null)"><i class="fa fa-building"></i> Line Of Business</a></li>
+					<li><a href="@Url.Action("index", "Employees", new { Area = "Masters" }, null)"><i class="fa fa-user"></i> Employees</a></li>
+					<li><a href="@Url.Action("index", "Customers", new { Area = "Masters" }, null)"><i class="fa fa-group"></i> Customers</a></li>
+					<li><a href="@Url.Action("index", "Suppliers", new { Area = "Masters" }, null)"><i class="fa fa-cubes"></i> Suppliers</a></li>					
+				</ul>
+			</li>
+			<li class="treeview">
+				<a id="chartOfAccountsLink" href="#">
+					<i class="fa fa-users"></i> <span>Chart Of Accounts</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="@Url.Action("index", "AccountTypes", new { Area = "Accounts" }, null)"><i class="fa fa-sitemap"></i> Account Types</a></li>
+					<li><a href="@Url.Action("index", "AccountGroups", new { Area = "Accounts" }, null)"><i class="fa fa-briefcase"></i> Account Groups</a></li>
+					<li><a href="@Url.Action("index", "AccountSubGroups", new { Area = "Accounts" }, null)"><i class="fa fa-book"></i> Account SubGroups</a></li>
+					<li><a href="@Url.Action("index", "AccountTitles", new { Area = "Accounts" }, null)"><i class="fa fa-credit-card"></i> Account Titles</a></li>
+				</ul>
+			</li>
+			<li class="treeview">
+				<a id="vouchersLink" href="#">
+					<i class="fa fa-users"></i> <span>Vouchers</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="@Url.Action("index", "JournalVouchers", new { Area = "Vouchers" }, null)"><i class="fa fa-money"></i> Journal Vouchers</a></li>
+					<li><a href="@Url.Action("index", "PaymentVouchers", new { Area = "Vouchers" }, null)"><i class="fa fa-money"></i> Payment Vouchers</a></li>
+					<li><a href="@Url.Action("index", "ReceiptVouchers", new { Area = "Vouchers" }, null)"><i class="fa fa-money"></i> Receipt Vouchers</a></li>
+				</ul>
+			</li>
+			<li class="treeview">
+				<a id="reportsLink" href="#">
+					<i class="fa fa-users"></i> <span>Reports</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">
+					<li><a href="#"><i class="fa fa-user"></i> Supplier Ledger</a></li>
+					<li><a href="#"><i class="fa fa-key"></i> Customer Ledger</a></li>
+					<li><a href="#"><i class="fa fa-pencil"></i> Employee Ledger</a></li>
+				</ul>
+			</li>
+		</ul>
+		<!-- /.sidebar-menu -->
+	</section>
+	<!-- /.sidebar -->
+</aside>

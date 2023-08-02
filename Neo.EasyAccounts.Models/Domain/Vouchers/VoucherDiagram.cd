@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.VoucherDetailBase">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAEAAABAgAAAAAAEAAAAAAAAAAAAAAAAEI=</HashCode>
+      <FileName>Domain\Vouchers\VoucherDetailBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.VoucherBase">
+    <Position X="7" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAIAAAEAAAAAAEAAAAAABASAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\VoucherBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.ReceiptVoucherDetail">
+    <Position X="13.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\ReceiptVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.ReceiptVoucher">
+    <Position X="4.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\ReceiptVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.PaymentVoucherDetail">
+    <Position X="11.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\PaymentVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.PaymentVoucher">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\PaymentVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.JournalVoucherDetail" Collapsed="true">
+    <Position X="15.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\JournalVoucherDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Neo.EasyAccounts.Models.Domain.Vouchers.JournalVoucher">
+    <Position X="9.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Vouchers\JournalVoucher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

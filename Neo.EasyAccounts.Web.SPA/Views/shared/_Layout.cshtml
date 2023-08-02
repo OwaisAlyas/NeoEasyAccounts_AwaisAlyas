@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>@ViewBag.Title Admin Panel</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+	@RenderSection("styles_top_before", required: false)
+	@Styles.Render("~/Content/css")
+	@Styles.Render("~/Content/AdminLTE")
+	@Styles.Render("~/Content/AdminLTE-Blue")
+	@RenderSection("styles_top_after", required: false)
+	@Scripts.Render("~/bundles/modernizr")
+	@*<link href="~/Content/metisMenu.min.css" rel="stylesheet" />*@
+	<!--[if lt IE 9]>
+		<script src="Scripts/html5shiv.js"></script>
+		<script src="Scripts/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+		<!-- Main Header -->
+		<header class="main-header">
+			<!-- Logo -->
+			<a href='@Url.Action("index","Home")' class="logo">
+				<!-- mini logo for sidebar mini 50x50 pixels -->
+				<span class="logo-mini"><b>EZ</b>ACC</span>
+				<!-- logo for regular state and mobile devices -->
+				<span class="logo-lg"><b>Easy</b>Accounts</span>
+			</a>
+			<!-- Header Navbar -->
+			@Html.Partial("_headerNavBar")
+		</header>
+		<!-- Left side column. contains the logo and sidebar -->
+		@Html.Partial("_SideMenu")
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			@RenderBody()
+		</div>
+		<!-- /.content-wrapper -->
+		<!-- Main Footer -->
+		<footer class="main-footer">
+			<!-- To the right -->
+			<div class="pull-right hidden-xs">
+				<a href="https://www.facebook.com/neodescorpio">Designed & Developed By Ali</a>
+			</div>
+			<!-- Default to the left -->
+			Copyright &copy; @DateTime.Now.Year All rights reserved.
+		</footer>
+
+		<!-- Control Sidebar -->
+		@Html.Partial("_globalSettings")
+		<!-- /.control-sidebar -->
+		<!-- Add the sidebar's background. This div must be placed
+		   immediately after the control sidebar -->
+		<div class="control-sidebar-bg"></div>
+	</div>
+	<!-- REQUIRED JS SCRIPTS -->
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/AdminLTE")
+	@*<script src="~/Scripts/metisMenu.min.js"></script>*@
+	<script>
+		var url = window.location;//.sidebar-menu > li:nth-child(1) > a:nth-child(1) > i:nth-child(1)
+
+		// Will only work if string in href matches with location
+		//$('ul.nav a[href="' + url + '"]').parent().addClass('active');
+		$('ul.sidebar-menu li a[href="' + url + '"]').parent().addClass('active');
+
+		// Will also work for relative and absolute hrefs
+		$('ul.sidebar-menu li a').filter(function () {
+			return this.href == url;
+		}).parent().addClass('active');
+
+		$('ul.sidebar-menu li ul.treeview-menu li a[href="' + url + '"]').parent().addClass('active');
+		// Will also work for relative and absolute hrefs
+		$('ul.sidebar-menu li ul.treeview-menu li a').filter(function () {
+			return this.href == url;
+		}).parent().addClass('active');
+		$(function () {
+			$(".slimScrollDiv").css("height", "")
+		});
+		// Causes the bootstrap to slide up when close button is hit
+		$(function () {
+			$('body').on('close.bs.alert', function (e) {
+				e.preventDefault();
+				e.stopPropagation();
+				$(e.target).slideUp();
+			});
+		});
+		/// <summary>Shows bootstrap alerts.</summary>  
+		/// <param name="alertType" type="String">Type of alerts i.e. alert-info alert-success alert-warning alert-danger</param>  
+		/// <param name="alertType" type="String">Type of alerts icon i.e. glyphicon glyphicon-info-sign glyphicon glyphicon-ok-sign glyphicon glyphicon-warning-sign glyphicon glyphicon-remove-sign</param>  
+		/// <param name="message" type="String">Message to be shown</param>  
+		/// <param name="timeoutDelay" type="integer">No. of milliseconds before alert disappears i.e. 3000 = 3 seconds</param>  
+		function ShowAlert(alertType, alertIcon, message, timeoutDelay) {
+			$('#alert_placeholder').append('<div class="alert '
+				+ alertType + ' alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><span class="'
+				+ alertIcon + '"></span>  '
+				+ message + '</div>');
+			setTimeout(function () {$("#alert_placeholder").slideUp();}, timeoutDelay);
+		}
+	</script>
+	@RenderSection("styles", required: false)
+	@RenderSection("scripts", required: false)
+</body>
+</html>
